@@ -18,5 +18,9 @@ public class PlayerMovementConfig : ScriptableObject
     
     public float groundCheckDistance = 0.2f;
     public float groundedTimer = 0.2f;
+
+    public float lookSpeedDivider = 6.0f;
+    public float lookSmoothTime = 0.1f;
+    public float xCameraBounds = 60.0f;
 }
 

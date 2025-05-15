@@ -11,14 +11,22 @@ public class PlayerMovement : MonoBehaviour
     
         // Values
     private Vector2 _moveInput;
-    private Vector3 _moveVector = Vector3.zero;
-    
+    private Vector3 _moveDirection = Vector3.zero;
+    private Vector3 _moveVelocity = Vector3.zero;
+
     private bool _isJumping = false;
     private float _jumpVelocity = 0.0f;
     private float _groundTimer = 0.0f;
+    private float _currentJumpHoldTime = 0.0f;
 
-    
-        // Else
+    private Vector2 _lookInput;
+    [SerializeField] private GameObject _camera;
+    private Vector2 _currentMouseDelta;
+    private float _xRotation;
+    private Vector2 _currentMouseVelocity;
+
+
+    // Other
     [SerializeField] private PlayerMovementConfig _movementConfig;
     [SerializeField] private GroundCheck _groundCheck;
 
@@ -39,12 +47,19 @@ public class PlayerMovement : MonoBehaviour
             Debug.LogError("InputController component not found.");
     }
 
+    private void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     void OnEnable()
     {
         if (_inputController != null)
         {
             _inputController.MoveEvent += HandleMoveInput;
             _inputController.JumpEvent += HandleJumpInput;
+            _inputController.LookEvent += HandleLookInput;
         }
     }
 
@@ -54,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
         {
             _inputController.MoveEvent -= HandleMoveInput;
             _inputController.JumpEvent -= HandleJumpInput;
+            _inputController.LookEvent -= HandleLookInput;
         }
     }
 
@@ -64,41 +80,57 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleJumpInput()
     {
-        Debug.Log(_groundCheck.IsGrounded);
         if (!_isJumping && _groundCheck.IsGrounded)
-        {
             _isJumping = true;
-            Debug.Log("eeeeee");
-        }
-            //_isJumping = true;
     }
+
+    private void HandleLookInput(Vector2 look)
+    {
+        _lookInput = look;
+    }
+
+
     
     void Update()
     {
+        Look();
         Move();
         Jump();
 
-        _controller.Move(_moveVector * Time.deltaTime);
-        /*
-         * Determine Target Velocity: Based on the _currentMoveInput and the movementConfig.targetMoveSpeed, calculate the desired velocity vector for this frame. Remember to convert the 2D input to a 3D world space vector (considering camera orientation if necessary, though we will keep it world aligned conceptually for now).
-// Conceptual
-// Vector3 targetDirection = new Vector3(_currentMoveInput.x, 0, _currentMoveInput.y);
-// Vector3 targetVelocity = targetDirection * movementConfig.targetMoveSpeed;
-Calculate Acceleration/Deceleration: Compare the targetVelocity with the character current velocity. Use the accelerationRate or decelerationRate from the movementConfig (potentially influenced by the IsGrounded state – e.g., less acceleration/control in the air) to smoothly interpolate the current velocity towards the target velocity over time. Functions like Mathf.MoveTowards or Vector3.Lerp (used carefully) are common here. The rate determines how quickly the character speeds up or slows down.
-// Conceptual - applying acceleration/deceleration to currentVelocity
-// float accel = IsGrounded ? movementConfig.accelerationRate : movementConfig.airAccelerationRate; // Example
-// currentVelocity = Vector3.MoveTowards(currentVelocity, targetVelocity, accel * Time.deltaTime);
-Handle Gravity: Ensure gravity is applied correctly, especially when airborne. If using CharacterController, gravity needs to be manually added to the vertical component of the velocity each frame. If using Rigidbody, the physics engine handles gravity, but you might adjust its effect using gravityMultiplier from the movementConfig or by managing vertical velocity separately.
-// Conceptual - applying gravity if using CharacterController
-// if (!IsGrounded) { currentVelocity.y += Physics.gravity.y * movementConfig.gravityMultiplier * Time.deltaTime; }
-Apply Final Velocity: Use the calculated currentVelocity (incorporating input, acceleration/deceleration, and gravity) to move the character using either characterController.Move(currentVelocity * Time.deltaTime) or by setting rigidbody.velocity (often done in FixedUpdate for Rigidbody).
-         */
+        _controller.Move(_moveVelocity * Time.deltaTime);
+    }
+
+    private void Look()
+    {
+        Vector2 targetDelta = _lookInput / _movementConfig.lookSpeedDivider;
+
+        _currentMouseDelta = Vector2.SmoothDamp(_currentMouseDelta, targetDelta,
+            ref _currentMouseVelocity, _movementConfig.lookSmoothTime);
+
+        _xRotation -= _currentMouseDelta.y;
+        _xRotation = Mathf.Clamp(_xRotation, -_movementConfig.xCameraBounds, _movementConfig.xCameraBounds);
+
+        _camera.transform.localRotation = Quaternion.Euler(_xRotation, 0, 0);
+
+        transform.Rotate(Vector3.up, _currentMouseDelta.x);
     }
 
     private void Move()
     {
-        _moveVector.x = _moveInput.x * _movementConfig.targetMoveSpeed;
-        _moveVector.z = _moveInput.y * _movementConfig.targetMoveSpeed;
+        _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
+        _moveDirection.Normalize();
+
+        Vector3 targetVelocity = _moveDirection * _movementConfig.targetMoveSpeed;
+
+        float acceleration = _groundCheck.IsGrounded ? _movementConfig.accelerationRate : _movementConfig.airControlFactor;
+
+        if (_moveInput == Vector2.zero)
+            acceleration = _movementConfig.decelerationRate;
+
+        _moveVelocity.x = Mathf.MoveTowards(_moveVelocity.x, targetVelocity.x, acceleration * Time.deltaTime);
+        _moveVelocity.z = Mathf.MoveTowards(_moveVelocity.z, targetVelocity.z, acceleration * Time.deltaTime);
+
+        //_moveVelocity = _moveDirection * _movementConfig.targetMoveSpeed;
     }
     
     private void Jump()
@@ -121,13 +153,16 @@ Apply Final Velocity: Use the calculated currentVelocity (incorporating input, a
 
 
         // Always apply Gravity in case of Ramps/Ledges/Falls/Etc
-        _jumpVelocity -= _movementConfig.gravityMultiplier * Time.deltaTime;
+        if (_jumpVelocity > 0.0f)
+            _jumpVelocity -= _movementConfig.gravityMultiplier / 2.0f * Time.deltaTime;
+        else
+            _jumpVelocity -= _movementConfig.gravityMultiplier * Time.deltaTime;
 
 
         // Actual Jump
         if (_isJumping)
         {
-            // Can Jump as long Player was recently Grounded
+            // Can Jump as long as Player was recently Grounded
             if (_groundTimer > 0.0f)
             {
                 _groundTimer = 0.0f;
@@ -137,6 +172,6 @@ Apply Final Velocity: Use the calculated currentVelocity (incorporating input, a
         }
 
 
-        _moveVector.y = _jumpVelocity;
+        _moveVelocity.y = _jumpVelocity;
     }
 }

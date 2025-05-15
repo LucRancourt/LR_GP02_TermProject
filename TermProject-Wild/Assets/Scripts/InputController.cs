@@ -30,8 +30,8 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Move.canceled += OnMoveCanceled;
         
         _gameControls.Player.Jump.performed += OnJumpPerformed;
-        
-        // etc for look fire jumpcanceled etc
+
+        _gameControls.Player.Look.performed += OnLookPerformed;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -49,12 +49,19 @@ public class InputController : MonoBehaviour
         JumpEvent?.Invoke();
     }
 
+    private void OnLookPerformed(InputAction.CallbackContext context)
+    {
+        LookEvent?.Invoke(context.ReadValue<Vector2>());
+    }
+
     private void OnDisable()
     {
         _gameControls.Player.Move.performed -= OnMovePerformed;
         _gameControls.Player.Move.canceled -= OnMoveCanceled;
         
         _gameControls.Player.Jump.performed -= OnJumpPerformed;
+
+        _gameControls.Player.Look.performed -= OnLookPerformed;
 
         _gameControls.Player.Disable();
     }
