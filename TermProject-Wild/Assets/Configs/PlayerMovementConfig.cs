@@ -10,6 +10,10 @@ public class PlayerMovementConfig : ScriptableObject
     public float accelerationRate = 10.0f;
     public float decelerationRate = 15.0f;
     
+    public float slideSpeed = 10.0f;
+
+    public float crouchSpeed = 2.5f;
+    
     public float baseJumpForce = 8.0f;
     public float maxJumpHoldTime = 1.0f;
     

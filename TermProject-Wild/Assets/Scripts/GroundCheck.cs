@@ -3,6 +3,8 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour
 {
     // Variables
+    [SerializeField] private PlayerMovementConfig _movementConfig;
+    
     public bool IsGrounded { get; private set; }
     [SerializeField] private Vector3 _boxExtents;
     //[SerializeField] private float _raycastDistance;
@@ -27,29 +29,32 @@ public class GroundCheck : MonoBehaviour
 
         // OPTION 2 - Physics.SphereCast / Physics.CapsuleCast: Sweeps a shape downwards.
         //              More robust than a single ray for uneven surfaces or larger character bases as it checks a volume.
-
-        /*
-        RaycastHit hit;
-
-        if (Physics.SphereCast(transform.position, _sphereRadius, Vector3.down, out hit, _raycastDistance, _groundLayer))
+        
+        if (Physics.SphereCast(transform.position, .25f, Vector3.down, out RaycastHit hit, _movementConfig.groundCheckDistance, _groundLayer))
         {
-            Debug.Log("Hey");
             IsGrounded = true;
             GroundHit = hit.transform.gameObject;
         }
         else
         {
-            Debug.Log("dwadwadwadad");
             IsGrounded = false;
             GroundHit = null;
         }
-        */
 
 
-        // OPTION 3 - Physics.CheckSphere / Physics.CheckBox: Checks for any overlapping colliders
+        // OPTION 3 - Physics.CheckX: Checks for any overlapping colliders
         //              within a small shape positioned just below the character feet. Simple true/false check,
         //              efficient but provides less information (like distance or surface normal) than casts.
 
-        IsGrounded = Physics.CheckBox(transform.position, _boxExtents, transform.rotation, _groundLayer);
+        //IsGrounded = Physics.CheckBox(transform.position, _boxExtents, transform.rotation, _groundLayer);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, .5f);
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position + Vector3.down * _movementConfig.groundCheckDistance, .5f);
     }
 }

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95814f00cbf1d5f458dd803e4b4d61fe, type: 3}
   m_Name: NewMovementConfig
   m_EditorClassIdentifier: 
-  targetMoveSpeed: 6
-  accelerationRate: 8
-  decelerationRate: 15
-  baseJumpForce: 0.5
-  maxJumpHoldTime: 1
-  gravityMultiplier: 14
+  targetMoveSpeed: 16
+  accelerationRate: 32
+  decelerationRate: 32
+  baseJumpForce: 0.1
+  maxJumpHoldTime: 0.6
+  gravityMultiplier: 24
   airControlFactor: 1
   groundCheckDistance: 0.2
   groundedTimer: 0.2

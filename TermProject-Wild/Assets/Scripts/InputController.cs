@@ -10,10 +10,19 @@ public class InputController : MonoBehaviour
     
     // Events + Methods
     public event Action<Vector2> MoveEvent;
+    
     public event Action<Vector2> LookEvent;
+    
     public event Action JumpEvent;
     public event Action JumpCancelEvent; // For variable jump height as an example
+    
     public event Action FireEvent;
+    public event Action FireCancelEvent;
+
+    public event Action SlideEvent;
+    
+    public event Action CrouchEvent;
+    public event Action CrouchCancelEvent;
 
 
     // Functions
@@ -29,9 +38,18 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Move.performed += OnMovePerformed;
         _gameControls.Player.Move.canceled += OnMoveCanceled;
         
+        _gameControls.Player.Slide.performed += OnSlidePerformed;
+
+        _gameControls.Player.Crouch.performed += OnCrouchPerformed;
+        _gameControls.Player.Crouch.canceled += OnCrouchCanceled;
+        
         _gameControls.Player.Jump.performed += OnJumpPerformed;
+        _gameControls.Player.Jump.canceled += OnJumpCanceled;
 
         _gameControls.Player.Look.performed += OnLookPerformed;
+
+        _gameControls.Player.Fire.performed += OnFirePerformed;
+        _gameControls.Player.Fire.canceled += OnFireCanceled;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -44,9 +62,29 @@ public class InputController : MonoBehaviour
         MoveEvent?.Invoke(Vector2.zero);
     }
 
+    private void OnSlidePerformed(InputAction.CallbackContext context)
+    {
+        SlideEvent?.Invoke();
+    }
+
+    private void OnCrouchPerformed(InputAction.CallbackContext context)
+    {
+        CrouchEvent?.Invoke();
+    }
+
+    private void OnCrouchCanceled(InputAction.CallbackContext context)
+    {
+        CrouchCancelEvent?.Invoke();
+    }
+
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
         JumpEvent?.Invoke();
+    }
+
+    private void OnJumpCanceled(InputAction.CallbackContext context)
+    {
+        JumpCancelEvent?.Invoke();
     }
 
     private void OnLookPerformed(InputAction.CallbackContext context)
@@ -54,14 +92,33 @@ public class InputController : MonoBehaviour
         LookEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
+    private void OnFirePerformed(InputAction.CallbackContext context)
+    {
+        FireEvent?.Invoke();
+    }
+
+    private void OnFireCanceled(InputAction.CallbackContext context)
+    {
+        FireCancelEvent?.Invoke();
+    }
+
     private void OnDisable()
     {
         _gameControls.Player.Move.performed -= OnMovePerformed;
         _gameControls.Player.Move.canceled -= OnMoveCanceled;
         
+        _gameControls.Player.Slide.performed -= OnSlidePerformed;
+
+        _gameControls.Player.Crouch.performed -= OnCrouchPerformed;
+        _gameControls.Player.Crouch.canceled -= OnCrouchCanceled;
+        
         _gameControls.Player.Jump.performed -= OnJumpPerformed;
+        _gameControls.Player.Jump.canceled -= OnJumpCanceled;
 
         _gameControls.Player.Look.performed -= OnLookPerformed;
+        
+        _gameControls.Player.Fire.performed -= OnFirePerformed;
+        _gameControls.Player.Fire.canceled -= OnFireCanceled;
 
         _gameControls.Player.Disable();
     }

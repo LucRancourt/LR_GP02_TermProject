@@ -15,9 +15,36 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Slide",
+                    "type": "Button",
+                    "id": "7ff66363-c924-4d53-a142-9c09523986c9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "d1a3a3e2-e1ed-4b8f-a9a3-43dd378ac6ae",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "46f16058-a6f2-4d76-8f45-6783fcc7c857",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "JumpCancel",
+                    "type": "Button",
+                    "id": "6095a8fb-71e0-494b-8499-dfac6762dc13",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -31,11 +58,29 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "362b7126-9fc0-4f6f-96b2-39a1400e57d7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FireCancel",
+                    "type": "Button",
+                    "id": "63b85a58-44bb-425e-9ad8-b85c3c7dadb0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
-                    "name": "2D Vector",
+                    "name": "Keyboard",
                     "id": "92df9a14-ee03-48f7-bb4d-cc3f6d856e87",
                     "path": "2DVector",
                     "interactions": "",
@@ -108,6 +153,61 @@
                     "processors": "",
                     "groups": ";Keyboard",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8cd1d335-248d-4b7d-87c2-5d2c4128a9dc",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "Invert",
+                    "groups": ";Keyboard",
+                    "action": "JumpCancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "157a811e-b8f3-4106-bb27-c08225d81516",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "792ab599-c5be-4642-bee6-b6d8e0784f9c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "Invert",
+                    "groups": ";Keyboard",
+                    "action": "FireCancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "10096a28-b7c5-4214-b694-12894e0e4b92",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "352b8066-e60a-4f72-adf8-6423f91c8885",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

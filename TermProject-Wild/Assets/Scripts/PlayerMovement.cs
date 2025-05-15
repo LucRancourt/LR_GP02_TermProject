@@ -10,25 +10,32 @@ public class PlayerMovement : MonoBehaviour
     private InputController _inputController;
     
         // Values
+    private Vector2 _lookInput;
+    private Vector2 _currentMouseDelta;
+    private Vector2 _currentMouseVelocity;
+    
     private Vector2 _moveInput;
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _moveVelocity = Vector3.zero;
 
+    private bool _isSliding = false;
+    
+    private bool _isCrouching = false;
+    
     private bool _isJumping = false;
     private float _jumpVelocity = 0.0f;
     private float _groundTimer = 0.0f;
     private float _currentJumpHoldTime = 0.0f;
 
-    private Vector2 _lookInput;
-    [SerializeField] private GameObject _camera;
-    private Vector2 _currentMouseDelta;
-    private float _xRotation;
-    private Vector2 _currentMouseVelocity;
+    private bool _isFiring = false;
+    private float _fireCooldown = 0.0f;
 
 
-    // Other
+        // Other
     [SerializeField] private PlayerMovementConfig _movementConfig;
     [SerializeField] private GroundCheck _groundCheck;
+    
+    [SerializeField] private FirearmConfig _firearmConfig;
 
     
     
@@ -53,40 +60,92 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (_inputController != null)
         {
-            _inputController.MoveEvent += HandleMoveInput;
-            _inputController.JumpEvent += HandleJumpInput;
             _inputController.LookEvent += HandleLookInput;
+            
+            _inputController.MoveEvent += HandleMoveInput;
+
+            _inputController.SlideEvent += HandleSlideInput;
+
+            _inputController.CrouchEvent += HandleCrouchInput;
+            _inputController.CrouchCancelEvent += HandleCrouchCancelInput;
+            
+            _inputController.JumpEvent += HandleJumpInput;
+            _inputController.JumpCancelEvent += HandleJumpCancelInput;
+            
+            _inputController.FireEvent += HandleFireInput;
+            _inputController.FireCancelEvent += HandleFireCancelInput;
         }
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (_inputController != null)
         {
-            _inputController.MoveEvent -= HandleMoveInput;
-            _inputController.JumpEvent -= HandleJumpInput;
             _inputController.LookEvent -= HandleLookInput;
+            
+            _inputController.MoveEvent -= HandleMoveInput;
+            
+            _inputController.SlideEvent -= HandleSlideInput;
+
+            _inputController.CrouchEvent -= HandleCrouchInput;
+            _inputController.CrouchCancelEvent -= HandleCrouchCancelInput;
+            
+            _inputController.JumpEvent -= HandleJumpInput;
+            _inputController.JumpCancelEvent -= HandleJumpCancelInput;
+            
+            _inputController.FireEvent -= HandleFireInput;
+            _inputController.FireCancelEvent -= HandleFireCancelInput;
         }
-    }
-
-    private void HandleMoveInput(Vector2 movement)
-    {
-        _moveInput = movement;
-    }
-
-    private void HandleJumpInput()
-    {
-        if (!_isJumping && _groundCheck.IsGrounded)
-            _isJumping = true;
     }
 
     private void HandleLookInput(Vector2 look)
     {
         _lookInput = look;
+    }
+    
+    private void HandleMoveInput(Vector2 movement)
+    {
+        _moveInput = movement;
+    }
+
+    private void HandleSlideInput()
+    {
+        _isSliding = true;
+    }
+
+    private void HandleCrouchInput()
+    {
+        _isCrouching = true;
+    }
+
+    private void HandleCrouchCancelInput()
+    {
+        _isCrouching = false;
+    }
+
+    private void HandleJumpInput()
+    {
+        _isJumping = true;
+    }
+
+    private void HandleJumpCancelInput()
+    {
+        _isJumping = false;
+    }
+    
+    private void HandleFireInput()
+    {
+        _isFiring = true;
+        _fireCooldown = 0.0f;
+    }
+
+    private void HandleFireCancelInput()
+    {
+        _isFiring = false;
     }
 
 
@@ -94,10 +153,13 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Look();
-        Move();
+        Move(); // Handles Slide + Crouch
         Jump();
 
         _controller.Move(_moveVelocity * Time.deltaTime);
+
+        if (_isFiring)
+            Fire();
     }
 
     private void Look()
@@ -107,11 +169,6 @@ public class PlayerMovement : MonoBehaviour
         _currentMouseDelta = Vector2.SmoothDamp(_currentMouseDelta, targetDelta,
             ref _currentMouseVelocity, _movementConfig.lookSmoothTime);
 
-        _xRotation -= _currentMouseDelta.y;
-        _xRotation = Mathf.Clamp(_xRotation, -_movementConfig.xCameraBounds, _movementConfig.xCameraBounds);
-
-        _camera.transform.localRotation = Quaternion.Euler(_xRotation, 0, 0);
-
         transform.Rotate(Vector3.up, _currentMouseDelta.x);
     }
 
@@ -119,18 +176,13 @@ public class PlayerMovement : MonoBehaviour
     {
         _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
-
+        
         Vector3 targetVelocity = _moveDirection * _movementConfig.targetMoveSpeed;
 
-        float acceleration = _groundCheck.IsGrounded ? _movementConfig.accelerationRate : _movementConfig.airControlFactor;
-
-        if (_moveInput == Vector2.zero)
-            acceleration = _movementConfig.decelerationRate;
-
-        _moveVelocity.x = Mathf.MoveTowards(_moveVelocity.x, targetVelocity.x, acceleration * Time.deltaTime);
-        _moveVelocity.z = Mathf.MoveTowards(_moveVelocity.z, targetVelocity.z, acceleration * Time.deltaTime);
-
-        //_moveVelocity = _moveDirection * _movementConfig.targetMoveSpeed;
+        float accel = _moveInput != Vector2.zero ? _movementConfig.accelerationRate : _movementConfig.decelerationRate;
+        float acceleration = _groundCheck.IsGrounded ? accel : accel * _movementConfig.airControlFactor;
+        
+        _moveVelocity = Vector3.MoveTowards(_moveVelocity, targetVelocity, acceleration * Time.deltaTime);
     }
     
     private void Jump()
@@ -167,11 +219,38 @@ public class PlayerMovement : MonoBehaviour
             {
                 _groundTimer = 0.0f;
                 _jumpVelocity += Mathf.Sqrt(_movementConfig.baseJumpForce * 2 * _movementConfig.gravityMultiplier);
-                _isJumping = false;
+                
+                _currentJumpHoldTime -= Time.deltaTime;
             }
+
+            // Handle Jump Hold
+            if (_groundTimer == 0.0f && _currentJumpHoldTime < _movementConfig.maxJumpHoldTime)
+            {
+                _jumpVelocity += Mathf.Sqrt(_movementConfig.baseJumpForce);
+                _currentJumpHoldTime -= Time.deltaTime;
+            }
+            
+            if (_currentJumpHoldTime < 0.0f)
+                _isJumping = false;
+        }
+        
+        if (!_isJumping)
+        {
+            _currentJumpHoldTime = _movementConfig.maxJumpHoldTime;
         }
 
 
         _moveVelocity.y = _jumpVelocity;
+    }
+
+    private void Fire()
+    {
+        _fireCooldown -= Time.deltaTime;
+        
+        if (_fireCooldown <= 0.0f)
+        {
+            Debug.Log("WWEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            _fireCooldown = _firearmConfig.fireRate;
+        }
     }
 }
