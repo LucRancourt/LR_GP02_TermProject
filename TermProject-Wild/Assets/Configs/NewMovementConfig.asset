@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: NewMovementConfig
   m_EditorClassIdentifier: 
   targetMoveSpeed: 16
-  accelerationRate: 32
-  decelerationRate: 32
+  accelerationRate: 76
+  decelerationRate: 76
+  slideSpeed: 10
+  crouchSpeed: 2.5
   baseJumpForce: 0.1
   maxJumpHoldTime: 0.6
   gravityMultiplier: 24

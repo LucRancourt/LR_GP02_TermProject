@@ -18,7 +18,7 @@ Shader "Custom/ToonSkin" {
 	}
 
 		SubShader{
-		Tags{ "RenderType" = "Opaque" }
+		Tags{ "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
 		LOD 200
 
 		CGPROGRAM
@@ -74,10 +74,10 @@ Shader "Custom/ToonSkin" {
 		half outputAlpha;
 		s.Albedo = PreMultiplyAlpha(s.Albedo, 1.0f, oneMinusReflectivity, /*out*/ outputAlpha);
 
-		half4 c = UNITY_BRDF_PBS(s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect);
+		half4 c = BRDF1_Unity_PBS(s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect);
 
 		c.rgb += SubsurfaceShadingSimple(_InternalColor, s.Normal, viewDir, s.Alpha*_SSS, gi.light.dir, gi.light.color);
-
+			
 		c.a = outputAlpha;
 		return c;
 	}

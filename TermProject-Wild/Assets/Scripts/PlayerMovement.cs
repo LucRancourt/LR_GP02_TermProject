@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController _controller;
     private InputController _inputController;
     
+        // Weapon
+    [SerializeField] private Weapon equippedWeapon;
+    
         // Values
     private Vector2 _lookInput;
     private Vector2 _currentMouseDelta;
@@ -18,24 +21,24 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _moveVelocity = Vector3.zero;
 
-    private bool _isSliding = false;
+    private bool _isSliding;
     
-    private bool _isCrouching = false;
+    private bool _isCrouching;
     
-    private bool _isJumping = false;
-    private float _jumpVelocity = 0.0f;
-    private float _groundTimer = 0.0f;
-    private float _currentJumpHoldTime = 0.0f;
+    private bool _isJumping;
+    private float _jumpVelocity;
+    private float _groundTimer;
+    private float _currentJumpHoldTime;
 
-    private bool _isFiring = false;
-    private float _fireCooldown = 0.0f;
+    private bool _isFiring;
+    private float _fireCooldown;
 
 
         // Other
-    [SerializeField] private PlayerMovementConfig _movementConfig;
-    [SerializeField] private GroundCheck _groundCheck;
+    [SerializeField] private PlayerMovementConfig movementConfig;
+    [SerializeField] private GroundCheck groundCheck;
     
-    [SerializeField] private FirearmConfig _firearmConfig;
+    [SerializeField] private FirearmConfig firearmConfig;
 
     
     
@@ -164,10 +167,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Look()
     {
-        Vector2 targetDelta = _lookInput / _movementConfig.lookSpeedDivider;
+        Vector2 targetDelta = _lookInput / movementConfig.lookSpeedDivider;
 
         _currentMouseDelta = Vector2.SmoothDamp(_currentMouseDelta, targetDelta,
-            ref _currentMouseVelocity, _movementConfig.lookSmoothTime);
+            ref _currentMouseVelocity, movementConfig.lookSmoothTime);
 
         transform.Rotate(Vector3.up, _currentMouseDelta.x);
     }
@@ -177,10 +180,10 @@ public class PlayerMovement : MonoBehaviour
         _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
         
-        Vector3 targetVelocity = _moveDirection * _movementConfig.targetMoveSpeed;
+        Vector3 targetVelocity = _moveDirection * movementConfig.targetMoveSpeed;
 
-        float accel = _moveInput != Vector2.zero ? _movementConfig.accelerationRate : _movementConfig.decelerationRate;
-        float acceleration = _groundCheck.IsGrounded ? accel : accel * _movementConfig.airControlFactor;
+        float accel = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
+        float acceleration = groundCheck.IsGrounded ? accel : accel * movementConfig.airControlFactor;
         
         _moveVelocity = Vector3.MoveTowards(_moveVelocity, targetVelocity, acceleration * Time.deltaTime);
     }
@@ -190,25 +193,25 @@ public class PlayerMovement : MonoBehaviour
         // Credits to: Kurt-Dekker
         // https://discussions.unity.com/t/how-to-correctly-setup-3d-character-movement-in-unity/811250 - first response post
 
-        if (_groundCheck.IsGrounded)
+        if (groundCheck.IsGrounded)
             // Cooldown to ensure that you can still Jump when walking down Ramps (might not always be Grounded)
-            _groundTimer = _movementConfig.groundedTimer;
+            _groundTimer = movementConfig.groundedTimer;
 
         if (_groundTimer > 0.0f)
             _groundTimer -= Time.deltaTime;
 
 
         
-        if (_groundCheck.IsGrounded && _jumpVelocity < 0)
+        if (groundCheck.IsGrounded && _jumpVelocity < 0)
             // Hit the Ground
             _jumpVelocity = 0f;
 
 
         // Always apply Gravity in case of Ramps/Ledges/Falls/Etc
         if (_jumpVelocity > 0.0f)
-            _jumpVelocity -= _movementConfig.gravityMultiplier / 2.0f * Time.deltaTime;
+            _jumpVelocity -= movementConfig.gravityMultiplier / 2.0f * Time.deltaTime;
         else
-            _jumpVelocity -= _movementConfig.gravityMultiplier * Time.deltaTime;
+            _jumpVelocity -= movementConfig.gravityMultiplier * Time.deltaTime;
 
 
         // Actual Jump
@@ -218,15 +221,15 @@ public class PlayerMovement : MonoBehaviour
             if (_groundTimer > 0.0f)
             {
                 _groundTimer = 0.0f;
-                _jumpVelocity += Mathf.Sqrt(_movementConfig.baseJumpForce * 2 * _movementConfig.gravityMultiplier);
+                _jumpVelocity += Mathf.Sqrt(movementConfig.baseJumpForce * 2 * movementConfig.gravityMultiplier);
                 
                 _currentJumpHoldTime -= Time.deltaTime;
             }
 
             // Handle Jump Hold
-            if (_groundTimer == 0.0f && _currentJumpHoldTime < _movementConfig.maxJumpHoldTime)
+            if (_groundTimer == 0.0f && _currentJumpHoldTime < movementConfig.maxJumpHoldTime)
             {
-                _jumpVelocity += Mathf.Sqrt(_movementConfig.baseJumpForce);
+                _jumpVelocity += Mathf.Sqrt(movementConfig.baseJumpForce);
                 _currentJumpHoldTime -= Time.deltaTime;
             }
             
@@ -236,7 +239,7 @@ public class PlayerMovement : MonoBehaviour
         
         if (!_isJumping)
         {
-            _currentJumpHoldTime = _movementConfig.maxJumpHoldTime;
+            _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
         }
 
 
@@ -249,8 +252,8 @@ public class PlayerMovement : MonoBehaviour
         
         if (_fireCooldown <= 0.0f)
         {
-            Debug.Log("WWEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            _fireCooldown = _firearmConfig.fireRate;
+            equippedWeapon.Fire();
+            _fireCooldown = firearmConfig.fireRate;
         }
     }
 }
