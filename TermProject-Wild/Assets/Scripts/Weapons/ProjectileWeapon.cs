@@ -17,9 +17,9 @@ public class ProjectileWeapon : Weapon
     {
         if (!_projectileManager.AnyAvailable()) return;
         
+        if (!CanFire()) return;
+        
         base.Fire();
-
-        if (!_canFire) return;
 
         _projectileManager.Fire(muzzle.transform.position, muzzle.transform.rotation);
     }

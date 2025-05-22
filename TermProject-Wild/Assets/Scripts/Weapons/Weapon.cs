@@ -6,6 +6,8 @@ public class Weapon : MonoBehaviour
     // Variables
     [Header("Default Weapon Details")]
     [SerializeField] protected int maxAmmo = 50;
+    private int _currentAmmo = 0;
+    [SerializeField] private int ammoRequired = 1;
 
     [SerializeField] private float fireRate = 0.2f;
     [SerializeField] private bool isAutomatic = false;
@@ -13,7 +15,6 @@ public class Weapon : MonoBehaviour
 
     private bool _onCooldown;
     private WaitForSeconds _cooldownWait;
-    protected bool _canFire = true;
 
     [SerializeField] protected Transform muzzle;
     
@@ -21,24 +22,19 @@ public class Weapon : MonoBehaviour
     // Functions
     private void Awake()
     {
+        _currentAmmo = maxAmmo;
         _cooldownWait = new WaitForSeconds(fireRate);
     }
 
     private void Update()
     {
-        if (_autoActive)
+        if (_autoActive && CanFire())
             Fire();
     }
     
     public virtual void Fire()
     {
-        if (_onCooldown)
-        {
-            _canFire = false;
-            return;
-        }
-        
-        _canFire = true;
+        _currentAmmo = Mathf.Clamp(_currentAmmo -= ammoRequired, 0, maxAmmo);
         
         StartCoroutine(FireCooldown());
 
@@ -56,6 +52,16 @@ public class Weapon : MonoBehaviour
             _autoActive = false;
     }
 
+    public void Reload()
+    {
+        _currentAmmo = maxAmmo;
+    }
+
+    protected bool CanFire()
+    {
+        return ammoRequired <= _currentAmmo && !_onCooldown;
+    }
+    
     IEnumerator FireCooldown()
     {
         _onCooldown = true;

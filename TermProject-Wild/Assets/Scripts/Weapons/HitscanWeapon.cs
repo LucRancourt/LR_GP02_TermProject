@@ -11,10 +11,10 @@ public class HitscanWeapon : Weapon
     // Functions
     public override void Fire()
     {
+        if (!CanFire()) return;
+
         base.Fire();
 
-        if (!_canFire) return;
-        
         Debug.DrawRay(muzzle.transform.position, muzzle.transform.forward * range, Color.blue, 5.0f);
     }
 }
