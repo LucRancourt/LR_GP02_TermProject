@@ -52,9 +52,9 @@ public class Weapon : MonoBehaviour
             _autoActive = false;
     }
 
-    public void Reload()
+    public virtual void Reload(int ammoToAdd)
     {
-        _currentAmmo = maxAmmo;
+        _currentAmmo = Mathf.Clamp(_currentAmmo + ammoToAdd, 0, maxAmmo);
     }
 
     protected bool CanFire()
