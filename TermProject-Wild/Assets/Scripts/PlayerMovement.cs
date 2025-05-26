@@ -5,52 +5,49 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     // Variables
-        // Controllers
+    // Controllers
     private CharacterController _controller;
     private InputController _inputController;
-    
-        // Weapon
+
+    // Weapon
     [SerializeField] private Weapon equippedWeapon;
-    
-        // Values
+
+    // Values
     private Vector2 _lookInput;
     private Vector2 _currentMouseDelta;
     private Vector2 _currentMouseVelocity;
-    
+
     private Vector2 _moveInput;
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _moveVelocity = Vector3.zero;
 
     private bool _isSliding;
-    
+
     private bool _isCrouching;
-    
+
     private bool _isJumping;
     private float _jumpVelocity;
     private float _groundTimer;
     private float _currentJumpHoldTime;
 
-    private bool _isFiring;
-    private float _fireCooldown;
 
-
-        // Other
+    // Other
     [SerializeField] private PlayerMovementConfig movementConfig;
     [SerializeField] private GroundCheck groundCheck;
-    
+
     [SerializeField] private FirearmConfig firearmConfig;
 
-    
-    
+
+
     // Functions
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-        
+
         if (_controller == null)
             Debug.LogError("CharacterController component not found.");
-        
-        
+
+
         _inputController = GetComponent<InputController>();
 
         if (_inputController == null)
@@ -68,19 +65,21 @@ public class PlayerMovement : MonoBehaviour
         if (_inputController != null)
         {
             _inputController.LookEvent += HandleLookInput;
-            
+
             _inputController.MoveEvent += HandleMoveInput;
 
             _inputController.SlideEvent += HandleSlideInput;
 
             _inputController.CrouchEvent += HandleCrouchInput;
             _inputController.CrouchCancelEvent += HandleCrouchCancelInput;
-            
+
             _inputController.JumpEvent += HandleJumpInput;
             _inputController.JumpCancelEvent += HandleJumpCancelInput;
-            
+
             _inputController.FireEvent += HandleFireInput;
             _inputController.FireCancelEvent += HandleFireCancelInput;
+
+            _inputController.ReloadEvent += HandleReloadInput;
         }
     }
 
@@ -89,19 +88,21 @@ public class PlayerMovement : MonoBehaviour
         if (_inputController != null)
         {
             _inputController.LookEvent -= HandleLookInput;
-            
+
             _inputController.MoveEvent -= HandleMoveInput;
-            
+
             _inputController.SlideEvent -= HandleSlideInput;
 
             _inputController.CrouchEvent -= HandleCrouchInput;
             _inputController.CrouchCancelEvent -= HandleCrouchCancelInput;
-            
+
             _inputController.JumpEvent -= HandleJumpInput;
             _inputController.JumpCancelEvent -= HandleJumpCancelInput;
-            
+
             _inputController.FireEvent -= HandleFireInput;
             _inputController.FireCancelEvent -= HandleFireCancelInput;
+
+            _inputController.ReloadEvent += HandleReloadInput;
         }
     }
 
@@ -109,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _lookInput = look;
     }
-    
+
     private void HandleMoveInput(Vector2 movement)
     {
         _moveInput = movement;
@@ -139,20 +140,24 @@ public class PlayerMovement : MonoBehaviour
     {
         _isJumping = false;
     }
-    
+
     private void HandleFireInput()
     {
-        _isFiring = true;
-        _fireCooldown = 0.0f;
+        equippedWeapon.Fire();
     }
 
     private void HandleFireCancelInput()
     {
-        _isFiring = false;
+        equippedWeapon.StopFire();
+    }
+
+    private void HandleReloadInput()
+    {
+        equippedWeapon.Reload(30);
     }
 
 
-    
+
     void Update()
     {
         Look();
@@ -160,9 +165,6 @@ public class PlayerMovement : MonoBehaviour
         Jump();
 
         _controller.Move(_moveVelocity * Time.deltaTime);
-
-        if (_isFiring)
-            Fire();
     }
 
     private void Look()
@@ -179,15 +181,15 @@ public class PlayerMovement : MonoBehaviour
     {
         _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
-        
+
         Vector3 targetVelocity = _moveDirection * movementConfig.targetMoveSpeed;
 
         float accel = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
         float acceleration = groundCheck.IsGrounded ? accel : accel * movementConfig.airControlFactor;
-        
+
         _moveVelocity = Vector3.MoveTowards(_moveVelocity, targetVelocity, acceleration * Time.deltaTime);
     }
-    
+
     private void Jump()
     {
         // Credits to: Kurt-Dekker
@@ -201,7 +203,7 @@ public class PlayerMovement : MonoBehaviour
             _groundTimer -= Time.deltaTime;
 
 
-        
+
         if (groundCheck.IsGrounded && _jumpVelocity < 0)
             // Hit the Ground
             _jumpVelocity = 0f;
@@ -222,7 +224,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 _groundTimer = 0.0f;
                 _jumpVelocity += Mathf.Sqrt(movementConfig.baseJumpForce * 2 * movementConfig.gravityMultiplier);
-                
+
                 _currentJumpHoldTime -= Time.deltaTime;
             }
 
@@ -232,11 +234,11 @@ public class PlayerMovement : MonoBehaviour
                 _jumpVelocity += Mathf.Sqrt(movementConfig.baseJumpForce);
                 _currentJumpHoldTime -= Time.deltaTime;
             }
-            
+
             if (_currentJumpHoldTime < 0.0f)
                 _isJumping = false;
         }
-        
+
         if (!_isJumping)
         {
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
@@ -244,16 +246,5 @@ public class PlayerMovement : MonoBehaviour
 
 
         _moveVelocity.y = _jumpVelocity;
-    }
-
-    private void Fire()
-    {
-        _fireCooldown -= Time.deltaTime;
-        
-        if (_fireCooldown <= 0.0f)
-        {
-            equippedWeapon.Fire();
-            _fireCooldown = firearmConfig.fireRate;
-        }
     }
 }

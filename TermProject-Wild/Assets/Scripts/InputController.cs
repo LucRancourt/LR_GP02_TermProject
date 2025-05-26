@@ -15,14 +15,16 @@ public class InputController : MonoBehaviour
     
     public event Action JumpEvent;
     public event Action JumpCancelEvent; // For variable jump height as an example
-    
-    public event Action FireEvent;
-    public event Action FireCancelEvent;
 
     public event Action SlideEvent;
     
     public event Action CrouchEvent;
     public event Action CrouchCancelEvent;
+
+    public event Action FireEvent;
+    public event Action FireCancelEvent;
+
+    public event Action ReloadEvent;
 
 
     // Functions
@@ -50,6 +52,8 @@ public class InputController : MonoBehaviour
 
         _gameControls.Player.Fire.performed += OnFirePerformed;
         _gameControls.Player.Fire.canceled += OnFireCanceled;
+
+        _gameControls.Player.Reload.performed += OnReloadPerformed;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -102,6 +106,11 @@ public class InputController : MonoBehaviour
         FireCancelEvent?.Invoke();
     }
 
+    private void OnReloadPerformed(InputAction.CallbackContext context)
+    {
+        ReloadEvent?.Invoke();
+    }
+
     private void OnDisable()
     {
         _gameControls.Player.Move.performed -= OnMovePerformed;
@@ -119,6 +128,8 @@ public class InputController : MonoBehaviour
         
         _gameControls.Player.Fire.performed -= OnFirePerformed;
         _gameControls.Player.Fire.canceled -= OnFireCanceled;
+
+        _gameControls.Player.Reload.performed -= OnReloadPerformed;
 
         _gameControls.Player.Disable();
     }
