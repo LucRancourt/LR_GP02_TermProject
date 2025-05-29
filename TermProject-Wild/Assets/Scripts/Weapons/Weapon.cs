@@ -5,9 +5,10 @@ public class Weapon : MonoBehaviour
 {
     // Variables
     [Header("Default Weapon Details")]
+    [SerializeField] private float damage = 1.0f;
     [SerializeField] private float weaponCooldown = 0.2f;
     private WaitForSeconds _cooldownWait;
-    protected bool onCooldown;
+    private bool _onCooldown;
     
     
     
@@ -19,20 +20,27 @@ public class Weapon : MonoBehaviour
     
     public virtual void Use()
     {
+        //if (onCooldown) return;   <- try to get working
+        
         StartCoroutine(InitiateWeaponCooldown());
+    }
+    
+    IEnumerator InitiateWeaponCooldown()
+    {
+        _onCooldown = true;
+        
+        yield return _cooldownWait;
+        
+        _onCooldown = false;
     }
 
     public virtual void StopUsing()
     {
         
     }
-    
-    IEnumerator InitiateWeaponCooldown()
+
+    protected bool CanUse()
     {
-        onCooldown = true;
-        
-        yield return _cooldownWait;
-        
-        onCooldown = false;
+        return !_onCooldown;
     }
 }

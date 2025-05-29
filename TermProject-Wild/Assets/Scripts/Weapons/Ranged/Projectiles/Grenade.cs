@@ -10,8 +10,8 @@ public class Grenade : Projectile
     // Functions
     protected override void SetupRigidbody()
     {
-        rigidbody.isKinematic = false;
-        rigidbody.useGravity = true;
+        rb.isKinematic = false;
+        rb.useGravity = true;
     }
 
     protected override void OnEnable()
@@ -19,7 +19,7 @@ public class Grenade : Projectile
         base.OnEnable();
         
         _currentNumberOfBounces = totalNumberOfBounces;
-        rigidbody.AddForce(transform.forward * speed, ForceMode.Impulse);
+        rb.AddForce(transform.forward * speed, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)

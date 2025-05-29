@@ -5,7 +5,7 @@ using System.Collections;
 public class Projectile : MonoBehaviour
 {
     // Variables
-    protected Rigidbody rigidbody;
+    protected Rigidbody rb;
     
     [SerializeField] protected float speed = 1.0f;
     
@@ -16,15 +16,15 @@ public class Projectile : MonoBehaviour
     // Functions
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
 
         SetupRigidbody();
     }
 
     protected virtual void SetupRigidbody()
     {
-        rigidbody.isKinematic = true;
-        rigidbody.useGravity = false;
+        rb.isKinematic = true;
+        rb.useGravity = false;
     }
 
     public void SetupProjectile(Vector3 startPos, Quaternion direction)
@@ -37,10 +37,10 @@ public class Projectile : MonoBehaviour
     
     protected virtual void OnEnable()
     {
-        if (!rigidbody.isKinematic)
+        if (!rb.isKinematic)
         {
-            rigidbody.linearVelocity = Vector3.zero;
-            rigidbody.angularVelocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
         
         StartCoroutine(StartLifetime());

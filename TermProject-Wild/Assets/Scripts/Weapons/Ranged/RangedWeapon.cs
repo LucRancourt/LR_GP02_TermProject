@@ -58,6 +58,6 @@ public class RangedWeapon : Weapon
 
     protected bool CanFire()
     {
-        return ammoRequired <= _currentAmmo && !onCooldown;
+        return ammoRequired <= _currentAmmo && CanUse();
     }
 }
