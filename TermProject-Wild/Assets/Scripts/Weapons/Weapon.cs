@@ -5,7 +5,7 @@ public class Weapon : MonoBehaviour
 {
     // Variables
     [Header("Default Weapon Details")]
-    [SerializeField] private float damage = 1.0f;
+    [SerializeField] protected float damage = 1.0f;
     [SerializeField] private float weaponCooldown = 0.2f;
     private WaitForSeconds _cooldownWait;
     private bool _onCooldown;

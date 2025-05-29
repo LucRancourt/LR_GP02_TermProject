@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Weapon
     [SerializeField] private Weapon equippedWeapon;
+    
 
     // Values
     private Vector2 _lookInput;
@@ -29,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpVelocity;
     private float _groundTimer;
     private float _currentJumpHoldTime;
+
+    [SerializeField] private Transform playerHands;
 
 
     // Other
@@ -75,6 +78,8 @@ public class PlayerMovement : MonoBehaviour
 
             _inputController.JumpEvent += HandleJumpInput;
             _inputController.JumpCancelEvent += HandleJumpCancelInput;
+            
+            _inputController.EquipEvent += HandleEquipInput;
 
             _inputController.FireEvent += HandleFireInput;
             _inputController.FireCancelEvent += HandleFireCancelInput;
@@ -99,6 +104,8 @@ public class PlayerMovement : MonoBehaviour
             _inputController.JumpEvent -= HandleJumpInput;
             _inputController.JumpCancelEvent -= HandleJumpCancelInput;
 
+            _inputController.EquipEvent -= HandleEquipInput;
+            
             _inputController.FireEvent -= HandleFireInput;
             _inputController.FireCancelEvent -= HandleFireCancelInput;
 
@@ -139,6 +146,11 @@ public class PlayerMovement : MonoBehaviour
     private void HandleJumpCancelInput()
     {
         _isJumping = false;
+    }
+
+    private void HandleEquipInput(int index)
+    {
+        EquipWeapon(index);
     }
 
     private void HandleFireInput()
@@ -247,4 +259,20 @@ public class PlayerMovement : MonoBehaviour
 
         _moveVelocity.y = _jumpVelocity;
     }
+
+    // DESTROY EQUIPPED ITEM METHOD
+    private void EquipWeapon(int weaponIndex)
+    {
+        if (equippedWeapon != null)
+        {
+            Destroy(equippedWeapon);
+        }
+
+        Weapon weaponToEquip = _weaponInventory.ReturnWeapon(weaponIndex);
+        
+        equippedWeapon = Instantiate(weaponToEquip, playerHands);
+    }
+    
+    // DE-ACTIVATE EQUIPPED ITEM METHOD
+    
 }

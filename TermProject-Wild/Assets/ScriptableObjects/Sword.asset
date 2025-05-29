@@ -16,4 +16,4 @@ MonoBehaviour:
   hitboxExtents: {x: 0.1, y: 0.1, z: 1}
   hitboxMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 63

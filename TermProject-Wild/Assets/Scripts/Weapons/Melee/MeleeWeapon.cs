@@ -19,12 +19,12 @@ public class MeleeWeapon : Weapon
 
         foreach (Collider target in hitTargets)
         {
-            Debug.DrawRay(transform.position, HelpfulFunctions.GetDirection(target.transform.position, transform.position), Color.blue, 5.0f);
-            
-            // check for "IsHittable" -> Then HIT <- make Interface so you can call same function on all
+            ICanGetHit hit = target.GetComponent<ICanGetHit>();
 
+            if (hit != null)
+                hit.Hit(damage, 10.0f);  //<-- Switch out
             
-            // Knockback is b (target) - a (me)  . Normalize = Direction
+            Debug.DrawRay(transform.position, HelpfulFunctions.GetDirection(target.transform.position, transform.position), Color.blue, 5.0f);
         }
     }
 
