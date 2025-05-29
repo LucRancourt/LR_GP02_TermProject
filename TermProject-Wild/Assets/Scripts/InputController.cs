@@ -21,6 +21,8 @@ public class InputController : MonoBehaviour
     public event Action CrouchEvent;
     public event Action CrouchCancelEvent;
 
+    public event Action<int> EquipEvent;
+    
     public event Action FireEvent;
     public event Action FireCancelEvent;
 
@@ -50,6 +52,8 @@ public class InputController : MonoBehaviour
 
         _gameControls.Player.Look.performed += OnLookPerformed;
 
+        _gameControls.Player.EquipItem.performed += OnEquipPerformed;
+        
         _gameControls.Player.Fire.performed += OnFirePerformed;
         _gameControls.Player.Fire.canceled += OnFireCanceled;
 
@@ -96,6 +100,11 @@ public class InputController : MonoBehaviour
         LookEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
+    private void OnEquipPerformed(InputAction.CallbackContext context)
+    {
+        EquipEvent?.Invoke(context.ReadValue<int>());
+    }
+
     private void OnFirePerformed(InputAction.CallbackContext context)
     {
         FireEvent?.Invoke();
@@ -125,6 +134,8 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Jump.canceled -= OnJumpCanceled;
 
         _gameControls.Player.Look.performed -= OnLookPerformed;
+
+        _gameControls.Player.EquipItem.performed -= OnEquipPerformed;
         
         _gameControls.Player.Fire.performed -= OnFirePerformed;
         _gameControls.Player.Fire.canceled -= OnFireCanceled;

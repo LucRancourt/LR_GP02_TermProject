@@ -5,69 +5,42 @@ public class Weapon : MonoBehaviour
 {
     // Variables
     [Header("Default Weapon Details")]
-    [SerializeField] protected int maxAmmo = 50;
-    private int _currentAmmo = 0;
-    [SerializeField] private int ammoRequired = 1;
-
-    [SerializeField] private float fireRate = 0.2f;
-    [SerializeField] private bool isAutomatic = false;
-    private bool _autoActive;
-
-    private bool _onCooldown;
+    [SerializeField] protected float damage = 1.0f;
+    [SerializeField] private float weaponCooldown = 0.2f;
     private WaitForSeconds _cooldownWait;
-
-    [SerializeField] protected Transform muzzle;
+    private bool _onCooldown;
+    
     
     
     // Functions
-    private void Awake()
+    protected virtual void Awake()
     {
-        _currentAmmo = maxAmmo;
-        _cooldownWait = new WaitForSeconds(fireRate);
-    }
-
-    private void Update()
-    {
-        if (_autoActive && CanFire())
-            Fire();
+        _cooldownWait = new WaitForSeconds(weaponCooldown);
     }
     
-    public virtual void Fire()
+    public virtual void Use()
     {
-        _currentAmmo = Mathf.Clamp(_currentAmmo -= ammoRequired, 0, maxAmmo);
+        //if (onCooldown) return;   <- try to get working
         
-        StartCoroutine(FireCooldown());
-
-        if (isAutomatic)
-            _autoActive = true;
-
-        // Start shoot cooldown
-        // Play sound effect
-        // Spawn particle at muzzle location
-    }
-
-    public void StopFire()
-    {
-        if (isAutomatic)
-            _autoActive = false;
-    }
-
-    public virtual void Reload(int ammoToAdd)
-    {
-        _currentAmmo = Mathf.Clamp(_currentAmmo + ammoToAdd, 0, maxAmmo);
-    }
-
-    protected bool CanFire()
-    {
-        return ammoRequired <= _currentAmmo && !_onCooldown;
+        StartCoroutine(InitiateWeaponCooldown());
     }
     
-    IEnumerator FireCooldown()
+    IEnumerator InitiateWeaponCooldown()
     {
         _onCooldown = true;
         
         yield return _cooldownWait;
         
         _onCooldown = false;
+    }
+
+    public virtual void StopUsing()
+    {
+        
+    }
+
+    protected bool CanUse()
+    {
+        return !_onCooldown;
     }
 }

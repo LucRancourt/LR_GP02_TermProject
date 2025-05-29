@@ -4,13 +4,13 @@ using System.Linq;
 public abstract class BasePoolManager
 {
     // Variables
-    private GameObject[] _pool;
+    private readonly GameObject[] _pool;
     private readonly int _poolSize;
     
     
     
     // Constructor
-    public BasePoolManager(int numberOfObjects, GameObject objectPrefab)
+    protected BasePoolManager(int numberOfObjects, GameObject objectPrefab)
     {
         if (!objectPrefab)
         {
