@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HitscanWeapon : Weapon
+public class HitscanWeapon : RangedWeapon
 {
     // Variables
     [SerializeField] private float range = 100.0f;
@@ -9,11 +9,11 @@ public class HitscanWeapon : Weapon
     
     
     // Functions
-    public override void Fire()
+    public override void Use()
     {
         if (!CanFire()) return;
 
-        base.Fire();
+        base.Use();
 
         Debug.DrawRay(muzzle.transform.position, muzzle.transform.forward * range, Color.blue, 5.0f);
     }

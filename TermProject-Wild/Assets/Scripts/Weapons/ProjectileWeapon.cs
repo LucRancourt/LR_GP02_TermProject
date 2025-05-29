@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ProjectileWeapon : Weapon
+public class ProjectileWeapon : RangedWeapon
 {
     // Variables
     private ProjectileManager _projectileManager;
@@ -13,13 +13,13 @@ public class ProjectileWeapon : Weapon
         _projectileManager = new ProjectileManager(maxAmmo, projectile);
     }
     
-    public override void Fire()
+    public override void Use()
     {
         if (!_projectileManager.AnyAvailable()) return;
         
         if (!CanFire()) return;
         
-        base.Fire();
+        base.Use();
 
         _projectileManager.Fire(muzzle.transform.position, muzzle.transform.rotation);
     }

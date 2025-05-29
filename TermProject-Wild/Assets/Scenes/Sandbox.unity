@@ -806,9 +806,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 708b13cf4fd3dcd4e9aa7d841c99e1c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponCooldown: 0.2
   maxAmmo: 50
   ammoRequired: 1
-  fireRate: 0.1
   isAutomatic: 1
   muzzle: {fileID: 519318277}
   projectile: {fileID: 6275468593269010972, guid: 04d5d215c4e60fe44b1f2f2a7293f711, type: 3}
@@ -906,9 +906,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43ce3f8d16cfbe043b42977567a5ff21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponCooldown: 0.1
   maxAmmo: 50
   ammoRequired: 1
-  fireRate: 0.2
   isAutomatic: 0
   muzzle: {fileID: 193839350}
   range: 100
@@ -1125,6 +1125,10 @@ PrefabInstance:
     - target: {fileID: 264318499582938770, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4147665483541651569, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
+      propertyPath: weaponCooldown
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
       propertyPath: equippedWeapon

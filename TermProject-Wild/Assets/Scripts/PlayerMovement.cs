@@ -143,17 +143,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFireInput()
     {
-        equippedWeapon.Fire();
+        equippedWeapon.Use();
     }
 
     private void HandleFireCancelInput()
     {
-        equippedWeapon.StopFire();
+        equippedWeapon.StopUsing();
     }
 
     private void HandleReloadInput()
     {
-        equippedWeapon.Reload(30);
+        //equippedWeapon.Reload(30);
     }
 
 
