@@ -4,14 +4,15 @@ public class RangedWeapon : Weapon
 {
     // Variables
     [Header("Ranged Details")]
+    [SerializeField] private bool isAutomatic = false;
+    private bool _autoActive;
+    
+    [SerializeField] protected Transform muzzle;
+    
+    [Header("Ammo Details")]
     [SerializeField] protected int maxAmmo = 50;
     private int _currentAmmo = 0;
     [SerializeField] private int ammoRequired = 1;
-
-    [SerializeField] private bool isAutomatic = false;
-    private bool _autoActive;
-
-    [SerializeField] protected Transform muzzle;
     
     
     // Functions
@@ -37,7 +38,7 @@ public class RangedWeapon : Weapon
         if (isAutomatic)
             _autoActive = true;
 
-        // Start shoot cooldown
+        
         // Play sound effect
         // Spawn particle at muzzle location
     }
