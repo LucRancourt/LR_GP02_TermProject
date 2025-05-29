@@ -78,16 +78,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Wheel",
-                    "type": "Button",
-                    "id": "e83072a8-4f42-4eda-9695-00bb48e1d17b",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "EquipItem1",
+                    "name": "EquipItem",
                     "type": "Button",
                     "id": "1c35b311-5d28-4a98-b9a4-2521db002934",
                     "expectedControlType": "",
@@ -231,69 +222,14 @@
                 },
                 {
                     "name": "",
-                    "id": "fc7f6bee-fbcc-406c-ab0a-45650990d9ca",
-                    "path": "<Mouse>/forwardButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Wheel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "cffdc0ef-c932-4e77-a529-4fc02089484d",
                     "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "EquipItem1",
+                    "action": "EquipItem",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "Two Modifiers",
-                    "id": "23a7a166-579b-4d8e-80fb-efc09f4bac7f",
-                    "path": "TwoModifiers",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EquipItem1",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier1",
-                    "id": "a39fea53-22b4-412b-8bd6-639b64a88770",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EquipItem1",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "modifier2",
-                    "id": "deca9c1a-c7e0-4f8f-bd9e-e5cb702e7aa3",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EquipItem1",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "066d0bb0-8706-42fc-8745-36c12386bff7",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EquipItem1",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         }

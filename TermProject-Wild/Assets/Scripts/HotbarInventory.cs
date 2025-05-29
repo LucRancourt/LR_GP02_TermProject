@@ -7,7 +7,7 @@ public class HotbarInventory : MonoBehaviour
     
     
     // Functions
-    Weapon ReturnItem(int index)
+    public Weapon ReturnItem(int index)
     {
         if (index >= _heldWeapons.Length) return null;
         

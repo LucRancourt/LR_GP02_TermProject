@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Weapon
     [SerializeField] private Weapon equippedWeapon;
+    [SerializeField] private HotbarInventory _weaponInventory;
     
 
     // Values
@@ -268,7 +269,7 @@ public class PlayerMovement : MonoBehaviour
             Destroy(equippedWeapon);
         }
 
-        Weapon weaponToEquip = _weaponInventory.ReturnWeapon(weaponIndex);
+        Weapon weaponToEquip = _weaponInventory.ReturnItem(weaponIndex);
         
         equippedWeapon = Instantiate(weaponToEquip, playerHands);
     }
