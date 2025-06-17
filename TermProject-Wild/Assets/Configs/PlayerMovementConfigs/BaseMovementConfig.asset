@@ -17,16 +17,16 @@ MonoBehaviour:
   decelerationRate: 76
   slideSpeed: 10
   crouchSpeed: 2.5
-  jumpBufferTime: 0.2
+  jumpBufferTime: 0.05
   coyoteTime: 0.2
-  initialJumpForce: 22
-  holdtimeJumpForce: 0.8
+  initialJumpForce: 222
+  holdtimeJumpForce: 10
   maxJumpHoldTime: 0.3
   groundCheckDistance: 0.075
   slopeCheckDistance: 1
   lookSpeed: 0.24
   lookSmoothTime: 0.1
-  xCameraBounds: 60
-  gravityForce: 1
+  xCameraBounds: 45
+  gravityForce: -9
   gravityMultiplier: 1.5
-  airControlFactor: 0.8
+  airControlFactor: 1

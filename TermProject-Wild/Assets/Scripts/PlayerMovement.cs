@@ -170,21 +170,24 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    void Update()
+    void FixedUpdate()
     {
         Look();
 
+        ApplyGravity();
+
         Move(); // Handles Slide + Crouch
-        AdjustVelocityToSlope();
 
         Jump();
 
+        AdjustVelocityToSlope();
+
         ApplyAccelDecelRates();
 
-        //_targetVelocity *= Time.deltaTime;
+
         _moveVelocity = _targetVelocity;
 
-        _controller.Move(_moveVelocity * Time.deltaTime);
+        _controller.Move(_moveVelocity * Time.fixedDeltaTime);
     }
 
     private void Look()
@@ -194,13 +197,28 @@ public class PlayerMovement : MonoBehaviour
         _currentMouseDelta = Vector2.SmoothDamp(_currentMouseDelta, targetDelta,
             ref _currentMouseVelocity, movementConfig.lookSmoothTime);
 
+
         // Left/Right
         transform.Rotate(Vector3.up, _currentMouseDelta.x);
+
 
         // Up/Down
         _lookTargetRotX = HelpfulFunctions.Clamp(_lookTargetRotX - _currentMouseDelta.y, -movementConfig.xCameraBounds, movementConfig.xCameraBounds);
 
         lookTarget.localRotation = Quaternion.AngleAxis(_lookTargetRotX, Vector3.right);
+    }
+
+    private void ApplyGravity()
+    {
+        // Always apply Gravity in case of Jumps/Ramps/Ledges/Falls/Etc
+        if (groundCheck.IsGrounded && _jumpVelocity < 0.0f)
+            _jumpVelocity = movementConfig.gravityForce;
+        else if (_jumpVelocity < 0.0f)
+            _jumpVelocity += movementConfig.gravityForce * movementConfig.gravityMultiplier * Time.fixedDeltaTime;
+        else
+            _jumpVelocity += movementConfig.gravityForce * Time.fixedDeltaTime;
+
+        _targetVelocity.y = _jumpVelocity;
     }
 
     private void Move()
@@ -232,45 +250,37 @@ public class PlayerMovement : MonoBehaviour
         {
             // Cooldown to ensure that you can still Jump when walking down Ramps (might not always be Grounded)
             _coyoteTime = movementConfig.coyoteTime;
+            _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
             _jumpVelocity = 0.0f;
         }
 
         if (_coyoteTime > 0.0f)
         {
-            _coyoteTime -= Time.deltaTime;
+            _coyoteTime -= Time.fixedDeltaTime;
             _canJump = true;
         }
 
         if (!_isJumping)
         {
-            _jumpBufferTime -= Time.deltaTime;
+            _jumpBufferTime -= Time.fixedDeltaTime;
         }
-
-
-        // Always apply Gravity in case of Jumps/Ramps/Ledges/Falls/Etc
-        if (_jumpVelocity < 0.0f)
-            _jumpVelocity -= movementConfig.gravityForce * movementConfig.gravityMultiplier;
-        else
-            _jumpVelocity -= movementConfig.gravityForce;
 
         // Actual Jump
         if (_jumpBufferTime > 0.0f && _canJump)
         {
-            Debug.Log(_coyoteTime);
             // Can Jump as long as Player was recently Grounded
             if (_coyoteTime > 0.0f)
             {
                 _coyoteTime = 0.0f;
-                _jumpVelocity += movementConfig.initialJumpForce;
-                
-                _currentJumpHoldTime -= Time.deltaTime;
+                _jumpVelocity = movementConfig.initialJumpForce * Time.fixedDeltaTime;
             }
 
             // Handle Jump Hold
-            if (_coyoteTime == 0.0f && _currentJumpHoldTime < movementConfig.maxJumpHoldTime)
+            if (_coyoteTime == 0.0f && _currentJumpHoldTime <= movementConfig.maxJumpHoldTime)
             {
-                _jumpVelocity += movementConfig.holdtimeJumpForce;
-                _currentJumpHoldTime -= Time.deltaTime;
+                _jumpVelocity += movementConfig.holdtimeJumpForce * Time.fixedDeltaTime;
+                _currentJumpHoldTime -= Time.fixedDeltaTime;
+                Debug.Log(_jumpVelocity);
             }
 
             if (_currentJumpHoldTime < 0.0f)
@@ -283,15 +293,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        _targetVelocity.y += _jumpVelocity;
+        _targetVelocity.y = _jumpVelocity;
     }
 
     private void ApplyAccelDecelRates()
     {
-        float accel = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
+        float rate = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
 
-        float acceleration = groundCheck.IsGrounded ? accel : accel * movementConfig.airControlFactor;
-        _targetVelocity = Vector3.MoveTowards(_moveVelocity, _targetVelocity, acceleration * Time.deltaTime);
+        rate = groundCheck.IsGrounded ? rate : rate * movementConfig.airControlFactor;
+
+        _targetVelocity = Vector3.MoveTowards(_moveVelocity, _targetVelocity, rate * Time.deltaTime);
     }
 
 
