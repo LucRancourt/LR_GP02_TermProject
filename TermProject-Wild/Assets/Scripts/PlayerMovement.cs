@@ -24,15 +24,17 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _moveInput;
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _moveVelocity = Vector3.zero;
+    private Vector3 _targetVelocity;
 
     private bool _isSliding;
 
     private bool _isCrouching;
 
+    private float _jumpBufferTime;
     private bool _isJumping;
+    private float _coyoteTime;
     private bool _canJump;
     private float _jumpVelocity;
-    private float _groundTimer;
     private float _currentJumpHoldTime;
 
     [SerializeField] private Transform playerHands;
@@ -138,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
     private void HandleJumpInput()
     {
         _isJumping = true;
+        _jumpBufferTime = movementConfig.jumpBufferTime;
     }
 
     private void HandleJumpCancelInput()
@@ -171,16 +174,15 @@ public class PlayerMovement : MonoBehaviour
     {
         Look();
 
+        Move(); // Handles Slide + Crouch
+        AdjustVelocityToSlope();
 
-        Vector3 targetVelocity = Vector3.zero;
+        Jump();
 
-        Move(ref targetVelocity); // Handles Slide + Crouch
-        Jump(ref targetVelocity);
+        ApplyAccelDecelRates();
 
-        ApplyAccelDecelRates(ref targetVelocity);
-
-
-        _moveVelocity = targetVelocity;
+        //_targetVelocity *= Time.deltaTime;
+        _moveVelocity = _targetVelocity;
 
         _controller.Move(_moveVelocity * Time.deltaTime);
     }
@@ -201,51 +203,71 @@ public class PlayerMovement : MonoBehaviour
         lookTarget.localRotation = Quaternion.AngleAxis(_lookTargetRotX, Vector3.right);
     }
 
-    private void Move(ref Vector3 velocity)
+    private void Move()
     {
         _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
 
-        velocity = _moveDirection * movementConfig.targetMoveSpeed;
+        _targetVelocity = _moveDirection * movementConfig.targetMoveSpeed;
     }
 
-    private void Jump(ref Vector3 velocity)
+    private void AdjustVelocityToSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, movementConfig.slopeCheckDistance))
+        {
+            Quaternion slopeRot = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+
+            Vector3 adjustedVelocity = slopeRot * _targetVelocity;
+
+            if (adjustedVelocity.y < 0.0f)
+            {
+                _targetVelocity = adjustedVelocity;
+            }
+        }
+    }
+
+    private void Jump()
     {
         if (groundCheck.IsGrounded)
         {
             // Cooldown to ensure that you can still Jump when walking down Ramps (might not always be Grounded)
-            _groundTimer = movementConfig.groundedTimer;
+            _coyoteTime = movementConfig.coyoteTime;
             _jumpVelocity = 0.0f;
         }
 
-        if (_groundTimer > 0.0f)
+        if (_coyoteTime > 0.0f)
         {
-            _groundTimer -= Time.deltaTime;
+            _coyoteTime -= Time.deltaTime;
             _canJump = true;
+        }
+
+        if (!_isJumping)
+        {
+            _jumpBufferTime -= Time.deltaTime;
         }
 
 
         // Always apply Gravity in case of Jumps/Ramps/Ledges/Falls/Etc
         if (_jumpVelocity < 0.0f)
-            _jumpVelocity -= movementConfig.gravityMultiplier * 2.0f * Time.deltaTime;
+            _jumpVelocity -= movementConfig.gravityForce * movementConfig.gravityMultiplier;
         else
-            _jumpVelocity -= movementConfig.gravityMultiplier * Time.deltaTime;
-
+            _jumpVelocity -= movementConfig.gravityForce;
 
         // Actual Jump
-        if (_isJumping && _canJump)
+        if (_jumpBufferTime > 0.0f && _canJump)
         {
+            Debug.Log(_coyoteTime);
             // Can Jump as long as Player was recently Grounded
-            if (_groundTimer > 0.0f)
+            if (_coyoteTime > 0.0f)
             {
-                _groundTimer = 0.0f;
+                _coyoteTime = 0.0f;
                 _jumpVelocity += movementConfig.initialJumpForce;
                 
                 _currentJumpHoldTime -= Time.deltaTime;
             }
 
             // Handle Jump Hold
-            if (_groundTimer == 0.0f && _currentJumpHoldTime < movementConfig.maxJumpHoldTime)
+            if (_coyoteTime == 0.0f && _currentJumpHoldTime < movementConfig.maxJumpHoldTime)
             {
                 _jumpVelocity += movementConfig.holdtimeJumpForce;
                 _currentJumpHoldTime -= Time.deltaTime;
@@ -255,38 +277,21 @@ public class PlayerMovement : MonoBehaviour
                 _canJump = false;
         }
 
-        if (!_isJumping || !_canJump)
+        if (_jumpBufferTime < 0.0f || !_canJump)
         {
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
         }
 
 
-        AdjustVelocityToSlope(ref velocity);
-
-        velocity.y += _jumpVelocity;
+        _targetVelocity.y += _jumpVelocity;
     }
 
-    private void AdjustVelocityToSlope(ref Vector3 velocity)
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, movementConfig.slopeCheckDistance))
-        {
-            Quaternion slopeRot = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-
-            Vector3 adjustedVelocity = slopeRot * velocity;
-
-            if (adjustedVelocity.y < 0.0f)
-            {
-                velocity = adjustedVelocity;
-            }
-        }
-    }
-
-    private void ApplyAccelDecelRates(ref Vector3 velocity)
+    private void ApplyAccelDecelRates()
     {
         float accel = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
 
         float acceleration = groundCheck.IsGrounded ? accel : accel * movementConfig.airControlFactor;
-        velocity = Vector3.MoveTowards(_moveVelocity, velocity, acceleration * Time.deltaTime);
+        _targetVelocity = Vector3.MoveTowards(_moveVelocity, _targetVelocity, acceleration * Time.deltaTime);
     }
 
 

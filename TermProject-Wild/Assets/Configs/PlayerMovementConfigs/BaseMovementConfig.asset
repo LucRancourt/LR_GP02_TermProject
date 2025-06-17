@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95814f00cbf1d5f458dd803e4b4d61fe, type: 3}
-  m_Name: NewMovementConfig
+  m_Name: BaseMovementConfig
   m_EditorClassIdentifier: 
   targetMoveSpeed: 16
   accelerationRate: 76
   decelerationRate: 76
   slideSpeed: 10
   crouchSpeed: 2.5
-  initialJumpForce: 7
-  holdtimeJumpForce: 0.2
+  jumpBufferTime: 0.2
+  coyoteTime: 0.2
+  initialJumpForce: 22
+  holdtimeJumpForce: 0.8
   maxJumpHoldTime: 0.3
-  gravityMultiplier: 24
-  airControlFactor: 1
   groundCheckDistance: 0.075
-  groundedTimer: 0.2
   slopeCheckDistance: 1
   lookSpeed: 0.24
   lookSmoothTime: 0.1
   xCameraBounds: 60
+  gravityForce: 1
+  gravityMultiplier: 1.5
+  airControlFactor: 0.8
