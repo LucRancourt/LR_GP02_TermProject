@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _lookInput;
     private Vector2 _currentMouseDelta;
     private Vector2 _currentMouseVelocity;
+    [SerializeField] private Transform lookTarget;
+    private float _lookTargetRotX;
 
     private Vector2 _moveInput;
     private Vector3 _moveDirection = Vector3.zero;
@@ -28,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private bool _isCrouching;
 
     private bool _isJumping;
+    private bool _canJump;
     private float _jumpVelocity;
     private float _groundTimer;
     private float _currentJumpHoldTime;
@@ -48,14 +51,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
 
-        if (_controller == null)
-            Debug.LogError("CharacterController component not found.");
-
-
         _inputController = GetComponent<InputController>();
-
-        if (_inputController == null)
-            Debug.LogError("InputController component not found.");
     }
 
     private void Start()
@@ -174,92 +170,125 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Look();
-        Move(); // Handles Slide + Crouch
-        Jump();
+
+
+        Vector3 targetVelocity = Vector3.zero;
+
+        Move(ref targetVelocity); // Handles Slide + Crouch
+        Jump(ref targetVelocity);
+
+        ApplyAccelDecelRates(ref targetVelocity);
+
+
+        _moveVelocity = targetVelocity;
 
         _controller.Move(_moveVelocity * Time.deltaTime);
     }
 
     private void Look()
     {
-        Vector2 targetDelta = _lookInput / movementConfig.lookSpeedDivider;
+        Vector2 targetDelta = _lookInput * movementConfig.lookSpeed;
 
         _currentMouseDelta = Vector2.SmoothDamp(_currentMouseDelta, targetDelta,
             ref _currentMouseVelocity, movementConfig.lookSmoothTime);
 
+        // Left/Right
         transform.Rotate(Vector3.up, _currentMouseDelta.x);
+
+        // Up/Down
+        _lookTargetRotX = HelpfulFunctions.Clamp(_lookTargetRotX - _currentMouseDelta.y, -movementConfig.xCameraBounds, movementConfig.xCameraBounds);
+
+        lookTarget.localRotation = Quaternion.AngleAxis(_lookTargetRotX, Vector3.right);
     }
 
-    private void Move()
+    private void Move(ref Vector3 velocity)
     {
         _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
 
-        Vector3 targetVelocity = _moveDirection * movementConfig.targetMoveSpeed;
-
-        float accel = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
-        float acceleration = groundCheck.IsGrounded ? accel : accel * movementConfig.airControlFactor;
-
-        _moveVelocity = Vector3.MoveTowards(_moveVelocity, targetVelocity, acceleration * Time.deltaTime);
+        velocity = _moveDirection * movementConfig.targetMoveSpeed;
     }
 
-    private void Jump()
+    private void Jump(ref Vector3 velocity)
     {
-        // Credits to: Kurt-Dekker
-        // https://discussions.unity.com/t/how-to-correctly-setup-3d-character-movement-in-unity/811250 - first response post
-
         if (groundCheck.IsGrounded)
+        {
             // Cooldown to ensure that you can still Jump when walking down Ramps (might not always be Grounded)
             _groundTimer = movementConfig.groundedTimer;
+            _jumpVelocity = 0.0f;
+        }
 
         if (_groundTimer > 0.0f)
+        {
             _groundTimer -= Time.deltaTime;
+            _canJump = true;
+        }
 
 
-
-        if (groundCheck.IsGrounded && _jumpVelocity < 0)
-            // Hit the Ground
-            _jumpVelocity = 0f;
-
-
-        // Always apply Gravity in case of Ramps/Ledges/Falls/Etc
-        if (_jumpVelocity > 0.0f)
-            _jumpVelocity -= movementConfig.gravityMultiplier / 2.0f * Time.deltaTime;
+        // Always apply Gravity in case of Jumps/Ramps/Ledges/Falls/Etc
+        if (_jumpVelocity < 0.0f)
+            _jumpVelocity -= movementConfig.gravityMultiplier * 2.0f * Time.deltaTime;
         else
             _jumpVelocity -= movementConfig.gravityMultiplier * Time.deltaTime;
 
 
         // Actual Jump
-        if (_isJumping)
+        if (_isJumping && _canJump)
         {
             // Can Jump as long as Player was recently Grounded
             if (_groundTimer > 0.0f)
             {
                 _groundTimer = 0.0f;
-                _jumpVelocity += Mathf.Sqrt(movementConfig.baseJumpForce * 2 * movementConfig.gravityMultiplier);
-
+                _jumpVelocity += movementConfig.initialJumpForce;
+                
                 _currentJumpHoldTime -= Time.deltaTime;
             }
 
             // Handle Jump Hold
             if (_groundTimer == 0.0f && _currentJumpHoldTime < movementConfig.maxJumpHoldTime)
             {
-                _jumpVelocity += Mathf.Sqrt(movementConfig.baseJumpForce);
+                _jumpVelocity += movementConfig.holdtimeJumpForce;
                 _currentJumpHoldTime -= Time.deltaTime;
             }
 
             if (_currentJumpHoldTime < 0.0f)
-                _isJumping = false;
+                _canJump = false;
         }
 
-        if (!_isJumping)
+        if (!_isJumping || !_canJump)
         {
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
         }
 
 
-        _moveVelocity.y = _jumpVelocity;
+        AdjustVelocityToSlope(ref velocity);
+
+        velocity.y += _jumpVelocity;
     }
+
+    private void AdjustVelocityToSlope(ref Vector3 velocity)
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, movementConfig.slopeCheckDistance))
+        {
+            Quaternion slopeRot = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+
+            Vector3 adjustedVelocity = slopeRot * velocity;
+
+            if (adjustedVelocity.y < 0.0f)
+            {
+                velocity = adjustedVelocity;
+            }
+        }
+    }
+
+    private void ApplyAccelDecelRates(ref Vector3 velocity)
+    {
+        float accel = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
+
+        float acceleration = groundCheck.IsGrounded ? accel : accel * movementConfig.airControlFactor;
+        velocity = Vector3.MoveTowards(_moveVelocity, velocity, acceleration * Time.deltaTime);
+    }
+
 
     // DESTROY EQUIPPED ITEM METHOD
     private void EquipWeapon(int weaponIndex)
