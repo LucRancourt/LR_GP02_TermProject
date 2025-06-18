@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpBufferTime;
     private bool _isJumping;
     private float _coyoteTime;
-    private bool _canJump;
+    private bool _canHold;
     private float _jumpVelocity;
     private float _currentJumpHoldTime;
     #endregion
@@ -200,9 +200,15 @@ public class PlayerMovement : MonoBehaviour
         _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
         _animator.SetFloat("MovementMagnitude", _moveInput.magnitude);
 
-
+        Debug.Log(groundCheck.IsGrounded);
         _animator.SetFloat("ForwardVelocity", Vector3.Project(_targetVelocity, transform.forward).magnitude);
-        _animator.SetFloat("VerticalVelocity", Vector3.Project(_targetVelocity, transform.up).magnitude);
+
+        _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
+        Debug.Log(_controller.velocity.y);
+
+
+
+        _animator.SetInteger("RandomIdle", Random.Range(0, 2));
     }
 
     private void FixedUpdate()
@@ -292,16 +298,18 @@ public class PlayerMovement : MonoBehaviour
         if (_coyoteTime > 0.0f)
         {
             _coyoteTime -= Time.fixedDeltaTime;
-            _canJump = true;
+            _canHold = true;
         }
 
         if (!_isJumping)
         {
             _jumpBufferTime -= Time.fixedDeltaTime;
+            _canHold = false;
+            _coyoteTime = -1.0f;
         }
 
         // Jump
-        if (_jumpBufferTime > 0.0f && _canJump)
+        if (_jumpBufferTime > 0.0f || _canHold)
         {
             // Can Jump as long as Player was recently Grounded
             if (_coyoteTime > 0.0f)
@@ -318,10 +326,10 @@ public class PlayerMovement : MonoBehaviour
             }
 
             if (_currentJumpHoldTime < 0.0f)
-                _canJump = false;
+                _canHold = false;
         }
 
-        if (_jumpBufferTime < 0.0f || !_canJump)
+        if (_jumpBufferTime < 0.0f || !_canHold)
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
 
 
