@@ -8,12 +8,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Variables
     // Controllers
     private CharacterController _controller;
     private InputController _inputController;
 
+
+    // Animator
     private Animator _animator;
+    private AnimatorStateInfo _previousAnimState;
+    private float _maxTimeToIdle = 5.0f;
+    private float _timeToIdle = 5.0f;
 
 
     // Weapon
@@ -72,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         _animator = GetComponent<Animator>();
+        _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
     }
 
     private void Start()
@@ -197,18 +202,36 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        //
         _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
-        _animator.SetFloat("MovementMagnitude", _moveInput.magnitude);
 
-        Debug.Log(groundCheck.IsGrounded);
         _animator.SetFloat("ForwardVelocity", Vector3.Project(_targetVelocity, transform.forward).magnitude);
 
         _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
-        Debug.Log(_controller.velocity.y);
-
-
 
         _animator.SetInteger("RandomIdle", Random.Range(0, 2));
+
+
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Movement"))
+        {
+            if (!_previousAnimState.IsName("Movement"))
+                _timeToIdle = _maxTimeToIdle;
+
+            if (_timeToIdle <= 0.0f)
+            {
+                _animator.SetBool("ToIdle", true);
+                _timeToIdle = _maxTimeToIdle;
+            }
+            else
+            {
+                _animator.SetBool("ToIdle", false);
+                _timeToIdle -= Time.deltaTime;
+            }
+        }
+
+
+        if (_previousAnimState.fullPathHash != _animator.GetCurrentAnimatorStateInfo(0).fullPathHash)
+            _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
     }
 
     private void FixedUpdate()
