@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     // Animator
     private Animator _animator;
     private AnimatorStateInfo _previousAnimState;
-    private float _maxTimeToIdle = 5.0f;
+    [SerializeField] private float maxTimeToIdle = 5.0f;
     private float _timeToIdle = 5.0f;
 
 
@@ -205,22 +205,30 @@ public class PlayerMovement : MonoBehaviour
         //
         _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
 
-        _animator.SetFloat("ForwardVelocity", Vector3.Project(_targetVelocity, transform.forward).magnitude);
+        
+        float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
+        _animator.SetFloat("ForwardVelocity", forwardVelocity);
+        
+        _animator.SetBool("IsMovingForward", Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
 
+        
         _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
 
         _animator.SetInteger("RandomIdle", Random.Range(0, 2));
 
 
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Movement"))
+        ///
+        ///
+        /// 
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Movement") || _animator.GetCurrentAnimatorStateInfo(0).IsName("MovementBack"))
         {
-            if (!_previousAnimState.IsName("Movement"))
-                _timeToIdle = _maxTimeToIdle;
+            if ((!_previousAnimState.IsName("Movement") && !_previousAnimState.IsName(("MovementBack")) || forwardVelocity > 0.1f))
+                _timeToIdle = maxTimeToIdle;
 
             if (_timeToIdle <= 0.0f)
             {
                 _animator.SetBool("ToIdle", true);
-                _timeToIdle = _maxTimeToIdle;
+                _timeToIdle = maxTimeToIdle;
             }
             else
             {
