@@ -263,7 +263,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (groundCheck.IsGrounded)
         {
-            // Cooldown to ensure that you can still Jump when walking down Ramps (might not always be Grounded)
+            // Cooldown to ensure that you can still Jump when walking down Ramps/after slightly falling off edge (might not always be Grounded)
             _coyoteTime = movementConfig.coyoteTime;
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
             _jumpVelocity = 0.0f;
@@ -280,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
             _jumpBufferTime -= Time.fixedDeltaTime;
         }
 
-        // Actual Jump
+        // Jump
         if (_jumpBufferTime > 0.0f && _canJump)
         {
             // Can Jump as long as Player was recently Grounded
@@ -295,7 +295,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 _jumpVelocity += movementConfig.holdtimeJumpForce * Time.fixedDeltaTime;
                 _currentJumpHoldTime -= Time.fixedDeltaTime;
-                Debug.Log(_jumpVelocity);
             }
 
             if (_currentJumpHoldTime < 0.0f)
@@ -303,9 +302,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (_jumpBufferTime < 0.0f || !_canJump)
-        {
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
-        }
 
 
         _targetVelocity.y = _jumpVelocity;
@@ -321,7 +318,13 @@ public class PlayerMovement : MonoBehaviour
         if (Vector3.Dot(_moveInput, _previousInput) < 0.0f)
             rate *= movementConfig.rateSwitchDirectionMultiplier;
 
+
+        float tempY = _targetVelocity.y;
+
         _targetVelocity = Vector3.MoveTowards(_moveVelocity, _targetVelocity, rate * Time.deltaTime);
+
+        _targetVelocity.y = tempY;
+
 
         if (_moveInput != Vector2.zero)
             _previousInput = _moveInput;

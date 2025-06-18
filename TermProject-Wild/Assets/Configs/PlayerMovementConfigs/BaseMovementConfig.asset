@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: BaseMovementConfig
   m_EditorClassIdentifier: 
   targetMoveSpeed: 12
-  accelerationRate: 32
-  decelerationRate: 32
+  accelerationRate: 76
+  decelerationRate: 76
   rateSwitchDirectionMultiplier: 2
   slideSpeed: 10
   crouchSpeed: 2.5
-  jumpBufferTime: 0.05
+  jumpBufferTime: 0.01
   coyoteTime: 0.2
   initialJumpForce: 468
   holdtimeJumpForce: 22
   maxJumpHoldTime: 0.3
   groundCheckDistance: 0.075
   slopeCheckDistance: 1
-  lookSpeed: 0.32
+  lookSpeed: 0.3
   lookSmoothTime: 0.05
   xCameraBounds: 45
   gravityForce: -32
