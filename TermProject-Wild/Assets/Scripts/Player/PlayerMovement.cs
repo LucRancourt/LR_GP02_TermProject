@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -8,21 +9,25 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Controllers
-    private CharacterController _controller;
-    private InputController _inputController;
-
-
     // Animator
     private Animator _animator;
     private AnimatorStateInfo _previousAnimState;
     [SerializeField] private float maxTimeToIdle = 5.0f;
     private float _timeToIdle = 5.0f;
-
+    
+    
+    // Controllers
+    private CharacterController _controller;
+    private InputController _inputController;
+    
+    
+    // Cinemachines
+    [SerializeField] private CinemachineStateDrivenCamera cmStateCamDriver;
+    
 
     // Weapon
     [SerializeField] private Weapon equippedWeapon;
-    [SerializeField] private HotbarInventory _weaponInventory;
+    [SerializeField] private HotbarInventory weaponInventory;
 
 
     // Variables
@@ -203,6 +208,8 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         //
+            
+            
         _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
 
         
@@ -398,7 +405,7 @@ public class PlayerMovement : MonoBehaviour
             Destroy(equippedWeapon);
         }
 
-        Weapon weaponToEquip = _weaponInventory.ReturnItem(weaponIndex);
+        Weapon weaponToEquip = weaponInventory.ReturnItem(weaponIndex);
         
         equippedWeapon = Instantiate(weaponToEquip, playerHands);
     }
