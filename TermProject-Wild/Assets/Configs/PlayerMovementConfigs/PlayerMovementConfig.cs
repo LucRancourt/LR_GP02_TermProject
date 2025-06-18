@@ -7,7 +7,8 @@ public class PlayerMovementConfig : ScriptableObject
     public float targetMoveSpeed = 5.0f;
     public float accelerationRate = 10.0f;
     public float decelerationRate = 15.0f;
-    
+    public float rateSwitchDirectionMultiplier = 2.0f;
+
     [Header("Slide")]
     public float slideSpeed = 10.0f;
 

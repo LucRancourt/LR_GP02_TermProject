@@ -12,30 +12,38 @@ public class PlayerMovement : MonoBehaviour
     // Weapon
     [SerializeField] private Weapon equippedWeapon;
     [SerializeField] private HotbarInventory _weaponInventory;
-    
 
-    // Values
+
+    // Variables
+    #region Look
     private Vector2 _lookInput;
     private Vector2 _currentMouseDelta;
     private Vector2 _currentMouseVelocity;
     [SerializeField] private Transform lookTarget;
     private float _lookTargetRotX;
+    #endregion
 
+    #region Move
     private Vector2 _moveInput;
+    private Vector2 _previousInput = Vector3.zero;
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _moveVelocity = Vector3.zero;
     private Vector3 _targetVelocity;
+    #endregion
+
 
     private bool _isSliding;
 
     private bool _isCrouching;
 
+    #region Jump
     private float _jumpBufferTime;
     private bool _isJumping;
     private float _coyoteTime;
     private bool _canJump;
     private float _jumpVelocity;
     private float _currentJumpHoldTime;
+    #endregion
 
     [SerializeField] private Transform playerHands;
 
@@ -61,6 +69,8 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
+
+    #region InputController Enable/Disable
 
     private void OnEnable()
     {
@@ -111,6 +121,10 @@ public class PlayerMovement : MonoBehaviour
             _inputController.ReloadEvent += HandleReloadInput;
         }
     }
+
+    #endregion
+
+    #region HandleInputs
 
     private void HandleLookInput(Vector2 look)
     {
@@ -168,6 +182,7 @@ public class PlayerMovement : MonoBehaviour
         //equippedWeapon.Reload(30);
     }
 
+    #endregion
 
 
     void FixedUpdate()
@@ -302,7 +317,14 @@ public class PlayerMovement : MonoBehaviour
 
         rate = groundCheck.IsGrounded ? rate : rate * movementConfig.airControlFactor;
 
+        // Are we going in the opposite direction?
+        if (Vector3.Dot(_moveInput, _previousInput) < 0.0f)
+            rate *= movementConfig.rateSwitchDirectionMultiplier;
+
         _targetVelocity = Vector3.MoveTowards(_moveVelocity, _targetVelocity, rate * Time.deltaTime);
+
+        if (_moveInput != Vector2.zero)
+            _previousInput = _moveInput;
     }
 
 
