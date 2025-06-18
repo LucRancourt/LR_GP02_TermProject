@@ -2566,6 +2566,10 @@ PrefabInstance:
       propertyPath: equippedWeapon
       value: 
       objectReference: {fileID: 1259841813}
+    - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
+      propertyPath: cmStateCamDriver
+      value: 
+      objectReference: {fileID: 1163389545}
     - target: {fileID: 6415278907685088257, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
       propertyPath: m_Layer
       value: 7
