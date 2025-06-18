@@ -2,12 +2,19 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(InputController))]
+
+[RequireComponent(typeof(Animator))]
+
+
 public class PlayerMovement : MonoBehaviour
 {
     // Variables
     // Controllers
     private CharacterController _controller;
     private InputController _inputController;
+
+    private Animator _animator;
+
 
     // Weapon
     [SerializeField] private Weapon equippedWeapon;
@@ -62,6 +69,9 @@ public class PlayerMovement : MonoBehaviour
         _controller = GetComponent<CharacterController>();
 
         _inputController = GetComponent<InputController>();
+
+
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -185,7 +195,17 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
 
-    void FixedUpdate()
+    private void Update()
+    {
+        _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
+        _animator.SetFloat("MovementMagnitude", _moveInput.magnitude);
+
+
+        _animator.SetFloat("ForwardVelocity", Vector3.Project(_targetVelocity, transform.forward).magnitude);
+        _animator.SetFloat("VerticalVelocity", Vector3.Project(_targetVelocity, transform.up).magnitude);
+    }
+
+    private void FixedUpdate()
     {
         Look();
 

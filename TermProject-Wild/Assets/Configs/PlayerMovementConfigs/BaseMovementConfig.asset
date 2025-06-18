@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BaseMovementConfig
   m_EditorClassIdentifier: 
   targetMoveSpeed: 12
-  accelerationRate: 76
-  decelerationRate: 76
+  accelerationRate: 42
+  decelerationRate: 42
   rateSwitchDirectionMultiplier: 2
   slideSpeed: 10
   crouchSpeed: 2.5
