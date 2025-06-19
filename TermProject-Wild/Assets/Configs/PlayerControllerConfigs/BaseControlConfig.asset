@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95814f00cbf1d5f458dd803e4b4d61fe, type: 3}
-  m_Name: BaseMovementConfig
+  m_Name: BaseControlConfig
   m_EditorClassIdentifier: 
   targetMoveSpeed: 12
   accelerationRate: 42
   decelerationRate: 42
   rateSwitchDirectionMultiplier: 2
-  slideSpeed: 10
+  blinkDistance: 10
+  blinkCooldown: 2
   crouchSpeed: 2.5
   jumpBufferTime: 0.01
   coyoteTime: 0.2
@@ -24,7 +25,15 @@ MonoBehaviour:
   holdtimeJumpForce: 22
   maxJumpHoldTime: 0.3
   groundCheckDistance: 0.075
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
   slopeCheckDistance: 1
+  interactCheckDistance: 1
+  interactCheckRadius: 0.2
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 256
   lookSpeed: 0.3
   lookSmoothTime: 0.05
   xCameraBounds: 45

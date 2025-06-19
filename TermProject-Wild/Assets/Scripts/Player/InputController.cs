@@ -31,6 +31,8 @@ public class InputController : MonoBehaviour
 
     public event Action ReloadEvent;
 
+    public event Action InteractEvent;
+
 
     // Functions
     private void Awake()
@@ -64,6 +66,8 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Aim.canceled += OnAimCanceled;
 
         _gameControls.Player.Reload.performed += OnReloadPerformed;
+
+        _gameControls.Player.Interact.performed += OnInteractPerformed;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -136,6 +140,11 @@ public class InputController : MonoBehaviour
         ReloadEvent?.Invoke();
     }
 
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        InteractEvent?.Invoke();
+    }
+
     private void OnDisable()
     {
         _gameControls.Player.Move.performed -= OnMovePerformed;
@@ -161,6 +170,8 @@ public class InputController : MonoBehaviour
 
         _gameControls.Player.Reload.performed -= OnReloadPerformed;
 
+        _gameControls.Player.Interact.performed -= OnInteractPerformed;
+        
         _gameControls.Player.Disable();
     }
 }

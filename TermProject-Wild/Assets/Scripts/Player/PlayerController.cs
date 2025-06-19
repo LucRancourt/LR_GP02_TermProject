@@ -10,7 +10,7 @@ using UnityEngine;
 [RequireComponent(typeof(HotbarInventory))]
 
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     // Animator
     private Animator _animator;
@@ -105,10 +105,8 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Configs
-    [SerializeField] private PlayerMovementConfig movementConfig;
+    [SerializeField] private PlayerControllerConfig playerControlConfig;
     [SerializeField] private GroundCheck groundCheck;
-
-    [SerializeField] private FirearmConfig firearmConfig;
 
 
 
@@ -119,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
 
         _inputController = GetComponent<InputController>();
 
-        _blinkTimer = new WaitForSeconds(movementConfig.blinkCooldown);
+        _blinkTimer = new WaitForSeconds(playerControlConfig.blinkCooldown);
 
         _animator = GetComponent<Animator>();
         _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
@@ -162,6 +160,8 @@ public class PlayerMovement : MonoBehaviour
             _inputController.AimCancelEvent += HandleAimCancelInput;
 
             _inputController.ReloadEvent += HandleReloadInput;
+            
+            _inputController.InteractEvent += HandleInteractInput;
         }
     }
 
@@ -190,6 +190,8 @@ public class PlayerMovement : MonoBehaviour
             _inputController.AimCancelEvent -= HandleAimCancelInput;
 
             _inputController.ReloadEvent -= HandleReloadInput;
+
+            _inputController.InteractEvent -= HandleInteractInput;
         }
     }
 
@@ -231,7 +233,7 @@ public class PlayerMovement : MonoBehaviour
     private void HandleJumpInput()
     {
         _isJumping = true;
-        _jumpBufferTime = movementConfig.jumpBufferTime;
+        _jumpBufferTime = playerControlConfig.jumpBufferTime;
 
         StartCoroutine(SetInputVar(InputSwitchValues.Jump));
     }
@@ -279,6 +281,11 @@ public class PlayerMovement : MonoBehaviour
 
         RangedWeapon ranged = (RangedWeapon)equippedWeapon;
         ranged.Reload(30);
+    }
+
+    private void HandleInteractInput()
+    {
+        AttemptInteract();
     }
 
 
@@ -345,10 +352,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Look()
     {
-        Vector2 targetDelta = _lookInput * movementConfig.lookSpeed;
+        Vector2 targetDelta = _lookInput * playerControlConfig.lookSpeed;
 
         _currentMouseDelta = Vector2.SmoothDamp(_currentMouseDelta, targetDelta,
-            ref _currentMouseVelocity, movementConfig.lookSmoothTime);
+            ref _currentMouseVelocity, playerControlConfig.lookSmoothTime);
 
 
         // Left/Right
@@ -356,7 +363,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         // Up/Down
-        _lookTargetRotX = HelpfulFunctions.Clamp(_lookTargetRotX - _currentMouseDelta.y, -movementConfig.xCameraBounds, movementConfig.xCameraBounds);
+        _lookTargetRotX = HelpfulFunctions.Clamp(_lookTargetRotX - _currentMouseDelta.y, -playerControlConfig.xCameraBounds, playerControlConfig.xCameraBounds);
 
         lookTarget.localRotation = Quaternion.AngleAxis(_lookTargetRotX, Vector3.right);
     }
@@ -365,11 +372,11 @@ public class PlayerMovement : MonoBehaviour
     {
         // Always apply Gravity in case of Jumps/Ramps/Ledges/Falls/Etc
         if (groundCheck.IsGrounded && _jumpVelocity < 0.0f)
-            _jumpVelocity = movementConfig.gravityForce;
+            _jumpVelocity = playerControlConfig.gravityForce;
         else if (_jumpVelocity < 0.0f)
-            _jumpVelocity += movementConfig.gravityForce * movementConfig.gravityMultiplier * Time.fixedDeltaTime;
+            _jumpVelocity += playerControlConfig.gravityForce * playerControlConfig.gravityMultiplier * Time.fixedDeltaTime;
         else
-            _jumpVelocity += movementConfig.gravityForce * Time.fixedDeltaTime;
+            _jumpVelocity += playerControlConfig.gravityForce * Time.fixedDeltaTime;
 
         _targetVelocity.y = _jumpVelocity;
     }
@@ -379,12 +386,12 @@ public class PlayerMovement : MonoBehaviour
         _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
 
-        _targetVelocity = _moveDirection * movementConfig.targetMoveSpeed;
+        _targetVelocity = _moveDirection * playerControlConfig.targetMoveSpeed;
     }
 
     private void AdjustVelocityToSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, movementConfig.slopeCheckDistance))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, playerControlConfig.slopeCheckDistance))
         {
             Quaternion slopeRot = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
 
@@ -402,8 +409,8 @@ public class PlayerMovement : MonoBehaviour
         if (groundCheck.IsGrounded)
         {
             // Cooldown to ensure that you can still Jump when walking down Ramps/after slightly falling off edge (might not always be Grounded)
-            _coyoteTime = movementConfig.coyoteTime;
-            _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
+            _coyoteTime = playerControlConfig.coyoteTime;
+            _currentJumpHoldTime = playerControlConfig.maxJumpHoldTime;
             _jumpVelocity = 0.0f;
         }
 
@@ -417,7 +424,6 @@ public class PlayerMovement : MonoBehaviour
         {
             _jumpBufferTime -= Time.fixedDeltaTime;
             _canHold = false;
-            _coyoteTime = -1.0f;
         }
 
         // Jump
@@ -427,13 +433,13 @@ public class PlayerMovement : MonoBehaviour
             if (_coyoteTime > 0.0f)
             {
                 _coyoteTime = 0.0f;
-                _jumpVelocity = movementConfig.initialJumpForce * Time.fixedDeltaTime;
+                _jumpVelocity = playerControlConfig.initialJumpForce * Time.fixedDeltaTime;
             }
 
             // Handle Jump Hold
-            if (_coyoteTime == 0.0f && _currentJumpHoldTime <= movementConfig.maxJumpHoldTime)
+            if (_coyoteTime == 0.0f && _currentJumpHoldTime <= playerControlConfig.maxJumpHoldTime)
             {
-                _jumpVelocity += movementConfig.holdtimeJumpForce * Time.fixedDeltaTime;
+                _jumpVelocity += playerControlConfig.holdtimeJumpForce * Time.fixedDeltaTime;
                 _currentJumpHoldTime -= Time.fixedDeltaTime;
             }
 
@@ -442,7 +448,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (_jumpBufferTime < 0.0f || !_canHold)
-            _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
+            _currentJumpHoldTime = playerControlConfig.maxJumpHoldTime;
 
 
         _targetVelocity.y = _jumpVelocity;
@@ -450,13 +456,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyAccelDecelRates()
     {
-        float rate = _moveInput != Vector2.zero ? movementConfig.accelerationRate : movementConfig.decelerationRate;
+        float rate = _moveInput != Vector2.zero ? playerControlConfig.accelerationRate : playerControlConfig.decelerationRate;
 
-        rate = groundCheck.IsGrounded ? rate : rate * movementConfig.airControlFactor;
+        rate = groundCheck.IsGrounded ? rate : rate * playerControlConfig.airControlFactor;
 
         // Are we going in the opposite direction?
         if (Vector3.Dot(_moveInput, _previousInput) < 0.0f)
-            rate *= movementConfig.rateSwitchDirectionMultiplier;
+            rate *= playerControlConfig.rateSwitchDirectionMultiplier;
 
 
         float tempY = _targetVelocity.y;
@@ -472,14 +478,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void Blink()
     {
-        Vector3 destination = transform.position + transform.forward * movementConfig.blinkDistance;
+        Vector3 destination = transform.position + transform.forward * playerControlConfig.blinkDistance;
 
         if (Physics.Raycast(transform.position, HelpfulFunctions.GetDirection(destination, transform.position),
-                out RaycastHit hitInfo, movementConfig.blinkDistance))
+                out RaycastHit hitInfo, playerControlConfig.blinkDistance))
         {
-            destination = transform.position + transform.forward * (hitInfo.distance - GetComponent<Renderer>().bounds.extents.y * 0.65f); 
+            destination = transform.position + transform.forward * (hitInfo.distance - GetComponent<CharacterController>().height * 0.65f); 
         }
-        
+
+        destination.y += 0.5f;
         transform.position = destination;
 
         StartCoroutine(BlinkCooldown());
@@ -536,6 +543,35 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+
+
+    private void AttemptInteract()
+    {
+        Vector3 origin = transform.position;
+        origin.y += GetComponent<CharacterController>().height * 0.65f;
+        
+        if (Physics.SphereCast(origin, playerControlConfig.interactCheckRadius, transform.forward, out RaycastHit hitInfo, 
+                playerControlConfig.interactCheckDistance, playerControlConfig.interactLayer))
+        {
+            if (hitInfo.collider.TryGetComponent(out IInteractable interactable))
+            {
+                interactable.Interact();
+            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 origin = transform.position;
+        origin.y += GetComponent<CharacterController>().height * 0.65f;
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(origin, playerControlConfig.interactCheckRadius);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(origin + transform.forward * playerControlConfig.interactCheckDistance, playerControlConfig.interactCheckRadius);
+    }
+    
 
 
     private void UpdateAnimatorVars()

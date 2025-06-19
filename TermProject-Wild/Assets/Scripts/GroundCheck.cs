@@ -3,7 +3,7 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour
 {
     // Variables
-    [SerializeField] private PlayerMovementConfig _movementConfig;
+    [SerializeField] private PlayerControllerConfig _playerControlConfig;
     
     public bool IsGrounded { get; private set; }
     [SerializeField] private LayerMask _groundLayer;
@@ -34,7 +34,7 @@ public class GroundCheck : MonoBehaviour
         //              within a small shape positioned just below the character feet. Simple true/false check,
         //              efficient but provides less information (like distance or surface normal) than casts.
 
-        if (Physics.CheckSphere(transform.position + Vector3.down * _movementConfig.groundCheckDistance, .25f, _groundLayer))
+        if (Physics.CheckSphere(transform.position + Vector3.down * _playerControlConfig.groundCheckDistance, .25f, _groundLayer))
             IsGrounded = true;
 
 
@@ -51,6 +51,6 @@ public class GroundCheck : MonoBehaviour
         */
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position + Vector3.down * _movementConfig.groundCheckDistance, .25f);
+        Gizmos.DrawWireSphere(transform.position + Vector3.down * _playerControlConfig.groundCheckDistance, .25f);
     }
 }

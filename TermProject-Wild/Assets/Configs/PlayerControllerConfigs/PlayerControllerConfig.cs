@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewMovementConfig", menuName = "Game Configs/Movement Config")]
-public class PlayerMovementConfig : ScriptableObject
+[CreateAssetMenu(fileName = "NewPlayerControlConfig", menuName = "Game Configs/Player Controller Config")]
+public class PlayerControllerConfig : ScriptableObject
 {
     [Header("Movement")]
     public float targetMoveSpeed = 5.0f;
@@ -29,10 +29,15 @@ public class PlayerMovementConfig : ScriptableObject
     public float maxJumpHoldTime = 0.3f;
 
 
-    [Header("CheckDistances")]
+    [Header("Checks")]
     public float groundCheckDistance = 0.2f;
+    public LayerMask groundLayer;
 
     public float slopeCheckDistance = 0.5f;
+    
+    public float interactCheckDistance = 1.0f;
+    public float interactCheckRadius = 0.5f;
+    public LayerMask interactLayer;
 
 
     [Header("Camera/Look")]
