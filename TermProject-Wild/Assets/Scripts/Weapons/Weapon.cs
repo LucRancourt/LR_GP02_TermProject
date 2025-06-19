@@ -20,8 +20,8 @@ public class Weapon : MonoBehaviour
     
     public virtual void Use()
     {
-        //if (onCooldown) return;   <- try to get working
-        
+        if (!CanUse()) return;
+
         StartCoroutine(InitiateWeaponCooldown());
     }
     

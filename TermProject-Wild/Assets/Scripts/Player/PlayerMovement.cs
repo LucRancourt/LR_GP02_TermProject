@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -12,8 +14,6 @@ public class PlayerMovement : MonoBehaviour
     // Animator
     private Animator _animator;
     private AnimatorStateInfo _previousAnimState;
-    [SerializeField] private float maxTimeToIdle = 5.0f;
-    private float _timeToIdle = 5.0f;
     
     
     // Controllers
@@ -31,6 +31,13 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Variables
+    #region Animator
+
+    [SerializeField] private float maxTimeToIdle = 5.0f;
+    private float _timeToIdle = 5.0f;
+
+    #endregion
+
     #region Look
     private Vector2 _lookInput;
     private Vector2 _currentMouseDelta;
@@ -47,7 +54,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _targetVelocity;
     #endregion
 
-
     private bool _isSliding;
 
     private bool _isCrouching;
@@ -61,10 +67,22 @@ public class PlayerMovement : MonoBehaviour
     private float _currentJumpHoldTime;
     #endregion
 
+    #region Inputs
+
+    private bool _inputIsAttacking;
+    private bool _inputIsJumping;
+    private bool _inputIsLooking;
+    //private bool _inputIsMoving;
+
+    [SerializeField] private float inputTimeActiveFloat = 0.5f;
+    private WaitForSeconds _inputTimeActiveSeconds;
+
+    #endregion
+
     [SerializeField] private Transform playerHands;
 
 
-    // Other
+        // Other
     [SerializeField] private PlayerMovementConfig movementConfig;
     [SerializeField] private GroundCheck groundCheck;
 
@@ -82,6 +100,9 @@ public class PlayerMovement : MonoBehaviour
 
         _animator = GetComponent<Animator>();
         _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
+
+
+        _inputTimeActiveSeconds = new WaitForSeconds(inputTimeActiveFloat);
     }
 
     private void Start()
@@ -149,6 +170,8 @@ public class PlayerMovement : MonoBehaviour
     private void HandleLookInput(Vector2 look)
     {
         _lookInput = look;
+
+        StartCoroutine(SetInputVar(InputSwitchValues.Look));
     }
 
     private void HandleMoveInput(Vector2 movement)
@@ -175,6 +198,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _isJumping = true;
         _jumpBufferTime = movementConfig.jumpBufferTime;
+
+        StartCoroutine(SetInputVar(InputSwitchValues.Jump));
     }
 
     private void HandleJumpCancelInput()
@@ -190,6 +215,8 @@ public class PlayerMovement : MonoBehaviour
     private void HandleFireInput()
     {
         equippedWeapon.Use();
+
+        StartCoroutine(SetInputVar(InputSwitchValues.Attack));
     }
 
     private void HandleFireCancelInput()
@@ -202,51 +229,40 @@ public class PlayerMovement : MonoBehaviour
         //equippedWeapon.Reload(30);
     }
 
+
+    IEnumerator SetInputVar(InputSwitchValues inputToSet)
+    {
+        InputSwitch(inputToSet, true);
+
+        yield return _inputTimeActiveSeconds;
+
+        InputSwitch(inputToSet, false);
+    }
+
+    private void InputSwitch(InputSwitchValues inputToSwitch, bool value)
+    {
+        switch ((int)inputToSwitch)
+        {
+            case 0:
+                _inputIsAttacking = value;
+                break;
+
+            case 1:
+                _inputIsJumping = value;
+                break;
+
+            case 2:
+                _inputIsLooking = value;
+                break;
+        }
+    }
+
     #endregion
 
 
     private void Update()
     {
-        //
-            
-            
-        _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
-
-        
-        float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
-        _animator.SetFloat("ForwardVelocity", forwardVelocity);
-        
-        _animator.SetBool("IsMovingForward", Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
-
-        
-        _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
-
-        _animator.SetInteger("RandomIdle", Random.Range(0, 2));
-
-
-        ///
-        ///
-        /// 
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Movement") || _animator.GetCurrentAnimatorStateInfo(0).IsName("MovementBack"))
-        {
-            if ((!_previousAnimState.IsName("Movement") && !_previousAnimState.IsName(("MovementBack")) || forwardVelocity > 0.1f))
-                _timeToIdle = maxTimeToIdle;
-
-            if (_timeToIdle <= 0.0f)
-            {
-                _animator.SetBool("ToIdle", true);
-                _timeToIdle = maxTimeToIdle;
-            }
-            else
-            {
-                _animator.SetBool("ToIdle", false);
-                _timeToIdle -= Time.deltaTime;
-            }
-        }
-
-
-        if (_previousAnimState.fullPathHash != _animator.GetCurrentAnimatorStateInfo(0).fullPathHash)
-            _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
+        UpdateAnimatorVars();
     }
 
     private void FixedUpdate()
@@ -409,7 +425,58 @@ public class PlayerMovement : MonoBehaviour
         
         equippedWeapon = Instantiate(weaponToEquip, playerHands);
     }
-    
+
     // DE-ACTIVATE EQUIPPED ITEM METHOD
-    
+
+
+    private void UpdateAnimatorVars()
+    {
+        _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
+
+
+        float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
+        _animator.SetFloat("ForwardVelocity", forwardVelocity);
+
+        _animator.SetBool("IsMovingForward", Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
+
+
+        _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
+
+        _animator.SetInteger("RandomIdle", Random.Range(0, 2));
+
+        // So if the camera moves you leave the Idle state
+        _animator.SetBool("IsInactive", !_inputIsLooking);
+
+        AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+        if (currentAnimStateInfo.IsName("Movement") || currentAnimStateInfo.IsName("MovementBack"))
+        {
+            if ((!_previousAnimState.IsName("Movement") && !_previousAnimState.IsName(("MovementBack")) || forwardVelocity > 0.0f || _inputIsLooking))
+                _timeToIdle = maxTimeToIdle;
+
+            if (_timeToIdle <= 0.0f)
+            {
+                _animator.SetBool("IsInactive", true);
+                _timeToIdle = maxTimeToIdle;
+            }
+            else
+            {
+                _animator.SetBool("IsInactive", false);
+                _timeToIdle -= Time.deltaTime;
+            }
+        }
+
+
+        if (_previousAnimState.fullPathHash != currentAnimStateInfo.fullPathHash)
+            _previousAnimState = currentAnimStateInfo;
+    }
+}
+
+
+
+enum InputSwitchValues
+{
+    Attack,
+    Jump,
+    Look
 }
