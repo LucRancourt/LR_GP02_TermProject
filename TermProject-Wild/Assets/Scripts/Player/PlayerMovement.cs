@@ -1,17 +1,33 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(InputController))]
+
+[RequireComponent(typeof(Animator))]
+
+
 public class PlayerMovement : MonoBehaviour
 {
-    // Variables
+    // Animator
+    private Animator _animator;
+    private AnimatorStateInfo _previousAnimState;
+    [SerializeField] private float maxTimeToIdle = 5.0f;
+    private float _timeToIdle = 5.0f;
+    
+    
     // Controllers
     private CharacterController _controller;
     private InputController _inputController;
+    
+    
+    // Cinemachines
+    [SerializeField] private CinemachineStateDrivenCamera cmStateCamDriver;
+    
 
     // Weapon
     [SerializeField] private Weapon equippedWeapon;
-    [SerializeField] private HotbarInventory _weaponInventory;
+    [SerializeField] private HotbarInventory weaponInventory;
 
 
     // Variables
@@ -40,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
     private float _jumpBufferTime;
     private bool _isJumping;
     private float _coyoteTime;
-    private bool _canJump;
+    private bool _canHold;
     private float _jumpVelocity;
     private float _currentJumpHoldTime;
     #endregion
@@ -62,6 +78,10 @@ public class PlayerMovement : MonoBehaviour
         _controller = GetComponent<CharacterController>();
 
         _inputController = GetComponent<InputController>();
+
+
+        _animator = GetComponent<Animator>();
+        _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
     }
 
     private void Start()
@@ -185,7 +205,51 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
 
-    void FixedUpdate()
+    private void Update()
+    {
+        //
+            
+            
+        _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
+
+        
+        float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
+        _animator.SetFloat("ForwardVelocity", forwardVelocity);
+        
+        _animator.SetBool("IsMovingForward", Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
+
+        
+        _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
+
+        _animator.SetInteger("RandomIdle", Random.Range(0, 2));
+
+
+        ///
+        ///
+        /// 
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Movement") || _animator.GetCurrentAnimatorStateInfo(0).IsName("MovementBack"))
+        {
+            if ((!_previousAnimState.IsName("Movement") && !_previousAnimState.IsName(("MovementBack")) || forwardVelocity > 0.1f))
+                _timeToIdle = maxTimeToIdle;
+
+            if (_timeToIdle <= 0.0f)
+            {
+                _animator.SetBool("ToIdle", true);
+                _timeToIdle = maxTimeToIdle;
+            }
+            else
+            {
+                _animator.SetBool("ToIdle", false);
+                _timeToIdle -= Time.deltaTime;
+            }
+        }
+
+
+        if (_previousAnimState.fullPathHash != _animator.GetCurrentAnimatorStateInfo(0).fullPathHash)
+            _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
+    }
+
+    private void FixedUpdate()
     {
         Look();
 
@@ -272,16 +336,18 @@ public class PlayerMovement : MonoBehaviour
         if (_coyoteTime > 0.0f)
         {
             _coyoteTime -= Time.fixedDeltaTime;
-            _canJump = true;
+            _canHold = true;
         }
 
         if (!_isJumping)
         {
             _jumpBufferTime -= Time.fixedDeltaTime;
+            _canHold = false;
+            _coyoteTime = -1.0f;
         }
 
         // Jump
-        if (_jumpBufferTime > 0.0f && _canJump)
+        if (_jumpBufferTime > 0.0f || _canHold)
         {
             // Can Jump as long as Player was recently Grounded
             if (_coyoteTime > 0.0f)
@@ -298,10 +364,10 @@ public class PlayerMovement : MonoBehaviour
             }
 
             if (_currentJumpHoldTime < 0.0f)
-                _canJump = false;
+                _canHold = false;
         }
 
-        if (_jumpBufferTime < 0.0f || !_canJump)
+        if (_jumpBufferTime < 0.0f || !_canHold)
             _currentJumpHoldTime = movementConfig.maxJumpHoldTime;
 
 
@@ -339,7 +405,7 @@ public class PlayerMovement : MonoBehaviour
             Destroy(equippedWeapon);
         }
 
-        Weapon weaponToEquip = _weaponInventory.ReturnItem(weaponIndex);
+        Weapon weaponToEquip = weaponInventory.ReturnItem(weaponIndex);
         
         equippedWeapon = Instantiate(weaponToEquip, playerHands);
     }
