@@ -4,6 +4,11 @@ using UnityEngine;
 public class MeleeWeaponConfig : ScriptableObject
 {
     // Variables
+    [Header("General Weapon")] 
+    public float damage;
+    public float knockbackForce;
+    
+    [Header("Melee Specific")]
     public Vector3 hitboxCenter;
     public Vector3 hitboxExtents;
     

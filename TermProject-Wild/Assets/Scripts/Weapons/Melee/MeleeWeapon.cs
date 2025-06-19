@@ -3,7 +3,7 @@ using UnityEngine;
 public class MeleeWeapon : Weapon
 {
     // Variables 
-    [SerializeField] private MeleeWeaponConfig meleeConfig;  // M<-- can this be applied to the Weapon class or do I just make 1 for Melee and 1 for Ranged? (and just copy Weapon stuff into those?)
+    [SerializeField] private MeleeWeaponConfig meleeConfig;
     
     
     // Functions
@@ -22,7 +22,7 @@ public class MeleeWeapon : Weapon
             ICanGetHit hit = target.GetComponent<ICanGetHit>();
 
             if (hit != null)
-                hit.Hit(damage, knockbackForce);  
+                hit.Hit(meleeConfig.damage, meleeConfig.knockbackForce);  
             
             Debug.DrawRay(transform.position, HelpfulFunctions.GetDirection(target.transform.position, transform.position), Color.blue, 5.0f);
         }

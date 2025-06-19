@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba208b0fd786ba54d90ba048ab7b84ec, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
+  damage: 15
+  knockbackForce: 15
   hitboxCenter: {x: 0, y: 0, z: 0}
   hitboxExtents: {x: 0.1, y: 0.1, z: 1}
   hitboxMask:
