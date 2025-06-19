@@ -108,8 +108,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0266f4d687e965c4ab861c1454294248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementConfig: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
-  _groundLayer:
+  _playerControlConfig: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
+  groundCheckDistance: 0.075
+  groundLayer:
     serializedVersion: 2
     m_Bits: 8
 --- !u!23 &556260429675538609
@@ -1736,7 +1737,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: a5674d01884853d4e8f2386a171e14d9, type: 3}
       propertyPath: m_AnimatePhysics
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 13700002, guid: a5674d01884853d4e8f2386a171e14d9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -1799,13 +1800,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cmStateCamDriver: {fileID: 0}
+  aimCam: {fileID: 0}
   maxTimeToIdle: 5
   lookTarget: {fileID: 2020283017146748214}
   inputTimeActiveFloat: 0.5
+  slopeCheckDistance: 1
+  interactCheckDistance: 1
+  interactCheckRadius: 0.2
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 256
   playerHands: {fileID: 0}
-  movementConfig: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
+  playerControlConfig: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
   groundCheck: {fileID: 1316438141194562933}
-  firearmConfig: {fileID: 11400000, guid: 80903628990685943bde391eafde1b12, type: 2}
 --- !u!114 &8703305798196915175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2039,6 +2046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  knockbackForce: 10
   weaponCooldown: 0.2
   isAutomatic: 1
   muzzle: {fileID: 6554444126714520732}
@@ -2144,6 +2152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  knockbackForce: 10
   weaponCooldown: 0.1
   isAutomatic: 0
   muzzle: {fileID: 8389208469139403271}
@@ -2242,6 +2251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  knockbackForce: 10
   weaponCooldown: 0.8
   isAutomatic: 0
   muzzle: {fileID: 8091078261337770783}

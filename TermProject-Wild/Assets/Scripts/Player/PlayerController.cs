@@ -101,6 +101,14 @@ public class PlayerController : MonoBehaviour
     private WaitForSeconds _inputTimeActiveSeconds;
     #endregion
 
+    #region Checks
+    [SerializeField] private float slopeCheckDistance = 1f;
+    
+    [SerializeField] public float interactCheckDistance = 1.0f;
+    [SerializeField] public float interactCheckRadius = 0.2f;
+    [SerializeField] public LayerMask interactLayer;
+    #endregion
+    
     [SerializeField] private Transform playerHands;
 
 
@@ -391,7 +399,7 @@ public class PlayerController : MonoBehaviour
 
     private void AdjustVelocityToSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, playerControlConfig.slopeCheckDistance))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, slopeCheckDistance))
         {
             Quaternion slopeRot = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
 
@@ -550,8 +558,8 @@ public class PlayerController : MonoBehaviour
         Vector3 origin = transform.position;
         origin.y += GetComponent<CharacterController>().height * 0.65f;
         
-        if (Physics.SphereCast(origin, playerControlConfig.interactCheckRadius, transform.forward, out RaycastHit hitInfo, 
-                playerControlConfig.interactCheckDistance, playerControlConfig.interactLayer))
+        if (Physics.SphereCast(origin, interactCheckRadius, transform.forward, out RaycastHit hitInfo, 
+                interactCheckDistance, interactLayer))
         {
             if (hitInfo.collider.TryGetComponent(out IInteractable interactable))
             {
@@ -566,10 +574,10 @@ public class PlayerController : MonoBehaviour
         origin.y += GetComponent<CharacterController>().height * 0.65f;
         
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(origin, playerControlConfig.interactCheckRadius);
+        Gizmos.DrawWireSphere(origin, interactCheckRadius);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(origin + transform.forward * playerControlConfig.interactCheckDistance, playerControlConfig.interactCheckRadius);
+        Gizmos.DrawWireSphere(origin + transform.forward * interactCheckDistance, interactCheckRadius);
     }
     
 

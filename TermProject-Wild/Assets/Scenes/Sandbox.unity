@@ -2267,30 +2267,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 264318499590136020, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
-      propertyPath: m_AnimatePhysics
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1316438141194562933, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
-      propertyPath: _playerControlConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
     - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
       propertyPath: aimCam
       value: 
       objectReference: {fileID: 1706145725}
     - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
-      propertyPath: movementConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: 0006f519898b08645a069ff255055c67, type: 2}
-    - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
       propertyPath: cmStateCamDriver
       value: 
       objectReference: {fileID: 1163389545}
-    - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
-      propertyPath: playerControlConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

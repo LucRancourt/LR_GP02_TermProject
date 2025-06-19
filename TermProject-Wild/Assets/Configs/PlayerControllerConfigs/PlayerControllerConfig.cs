@@ -29,17 +29,6 @@ public class PlayerControllerConfig : ScriptableObject
     public float maxJumpHoldTime = 0.3f;
 
 
-    [Header("Checks")]
-    public float groundCheckDistance = 0.2f;
-    public LayerMask groundLayer;
-
-    public float slopeCheckDistance = 0.5f;
-    
-    public float interactCheckDistance = 1.0f;
-    public float interactCheckRadius = 0.5f;
-    public LayerMask interactLayer;
-
-
     [Header("Camera/Look")]
     public float lookSpeed = 0.6f;
     public float lookSmoothTime = 0.1f;
