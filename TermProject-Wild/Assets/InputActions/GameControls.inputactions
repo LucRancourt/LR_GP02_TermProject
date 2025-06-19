@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Slide",
+                    "name": "Blink",
                     "type": "Button",
                     "id": "7ff66363-c924-4d53-a142-9c09523986c9",
                     "expectedControlType": "",
@@ -203,7 +203,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Slide",
+                    "action": "Blink",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

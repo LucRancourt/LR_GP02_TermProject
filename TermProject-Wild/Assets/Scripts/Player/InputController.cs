@@ -16,7 +16,7 @@ public class InputController : MonoBehaviour
     public event Action JumpEvent;
     public event Action JumpCancelEvent; // For variable jump height as an example
 
-    public event Action SlideEvent;
+    public event Action BlinkEvent;
     
     public event Action CrouchEvent;
     public event Action CrouchCancelEvent;
@@ -45,7 +45,7 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Move.performed += OnMovePerformed;
         _gameControls.Player.Move.canceled += OnMoveCanceled;
         
-        _gameControls.Player.Slide.performed += OnSlidePerformed;
+        _gameControls.Player.Blink.performed += OnBlinkPerformed;
 
         _gameControls.Player.Crouch.performed += OnCrouchPerformed;
         _gameControls.Player.Crouch.canceled += OnCrouchCanceled;
@@ -76,9 +76,9 @@ public class InputController : MonoBehaviour
         MoveEvent?.Invoke(Vector2.zero);
     }
 
-    private void OnSlidePerformed(InputAction.CallbackContext context)
+    private void OnBlinkPerformed(InputAction.CallbackContext context)
     {
-        SlideEvent?.Invoke();
+        BlinkEvent?.Invoke();
     }
 
     private void OnCrouchPerformed(InputAction.CallbackContext context)
@@ -141,7 +141,7 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Move.performed -= OnMovePerformed;
         _gameControls.Player.Move.canceled -= OnMoveCanceled;
         
-        _gameControls.Player.Slide.performed -= OnSlidePerformed;
+        _gameControls.Player.Blink.performed -= OnBlinkPerformed;
 
         _gameControls.Player.Crouch.performed -= OnCrouchPerformed;
         _gameControls.Player.Crouch.canceled -= OnCrouchCanceled;

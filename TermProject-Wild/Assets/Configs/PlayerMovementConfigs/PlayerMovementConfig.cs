@@ -10,8 +10,9 @@ public class PlayerMovementConfig : ScriptableObject
     public float rateSwitchDirectionMultiplier = 2.0f;
 
 
-    [Header("Slide")]
-    public float slideSpeed = 10.0f;
+    [Header("Blink")]
+    public float blinkDistance = 10.0f;
+    public float blinkCooldown = 2.0f;
 
 
     [Header("Crouch")]

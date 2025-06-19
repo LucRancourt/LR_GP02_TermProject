@@ -73,9 +73,15 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _targetVelocity;
     #endregion
 
-    private bool _isSliding;
+    #region Blink
+    private bool _isBlinking;
+    private bool _canBlink = true;
+    private WaitForSeconds _blinkTimer;
+    #endregion
+    
+    //private bool _isSliding;
 
-    private bool _isCrouching;
+    //private bool _isCrouching;
 
     #region Jump
     private float _jumpBufferTime;
@@ -87,15 +93,12 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #region Inputs
-
     private bool _inputIsAttacking;
     private bool _inputIsJumping;
     private bool _inputIsLooking;
     //private bool _inputIsMoving;
-
     [SerializeField] private float inputTimeActiveFloat = 0.5f;
     private WaitForSeconds _inputTimeActiveSeconds;
-
     #endregion
 
     [SerializeField] private Transform playerHands;
@@ -116,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
 
         _inputController = GetComponent<InputController>();
 
+        _blinkTimer = new WaitForSeconds(movementConfig.blinkCooldown);
 
         _animator = GetComponent<Animator>();
         _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
@@ -141,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
 
             _inputController.MoveEvent += HandleMoveInput;
 
-            _inputController.SlideEvent += HandleSlideInput;
+            _inputController.BlinkEvent += HandleBlinkInput;
 
             _inputController.CrouchEvent += HandleCrouchInput;
             _inputController.CrouchCancelEvent += HandleCrouchCancelInput;
@@ -169,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
 
             _inputController.MoveEvent -= HandleMoveInput;
 
-            _inputController.SlideEvent -= HandleSlideInput;
+            _inputController.BlinkEvent -= HandleBlinkInput;
 
             _inputController.CrouchEvent -= HandleCrouchInput;
             _inputController.CrouchCancelEvent -= HandleCrouchCancelInput;
@@ -205,19 +209,23 @@ public class PlayerMovement : MonoBehaviour
         _moveInput = movement;
     }
 
-    private void HandleSlideInput()
+    private void HandleBlinkInput()
     {
-        _isSliding = true;
+        if (!_canBlink) return;
+
+        _canBlink = false;
+        _isBlinking = true;
+        Blink();
     }
 
     private void HandleCrouchInput()
     {
-        _isCrouching = true;
+        //_isCrouching = true;
     }
 
     private void HandleCrouchCancelInput()
     {
-        _isCrouching = false;
+        //_isCrouching = false;
     }
 
     private void HandleJumpInput()
@@ -313,6 +321,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Look();
 
+        if (_isBlinking)
+        {
+            _isBlinking = false;
+            return;
+        }
+            
         ApplyGravity();
 
         Move(); // Handles Slide + Crouch
@@ -456,6 +470,28 @@ public class PlayerMovement : MonoBehaviour
             _previousInput = _moveInput;
     }
 
+    private void Blink()
+    {
+        Vector3 destination = transform.position + transform.forward * movementConfig.blinkDistance;
+
+        if (Physics.Raycast(transform.position, HelpfulFunctions.GetDirection(destination, transform.position),
+                out RaycastHit hitInfo, movementConfig.blinkDistance))
+        {
+            destination = transform.position + transform.forward * (hitInfo.distance - GetComponent<Renderer>().bounds.extents.y * 0.65f); 
+        }
+        
+        transform.position = destination;
+
+        StartCoroutine(BlinkCooldown());
+    }
+
+    IEnumerator BlinkCooldown()
+    {
+        yield return _blinkTimer;
+
+        _canBlink = true;
+    }
+
 
 
     // DESTROY EQUIPPED ITEM METHOD
@@ -525,14 +561,15 @@ public class PlayerMovement : MonoBehaviour
         if (_inputIsAttacking && equippedWeapon is MeleeWeapon)
             _animator.SetTrigger(_hashMeleeAttack);
 
-        _animator.SetBool(_hashInputDetected, _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero);
+        bool inputDetected = _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero || _isBlinking;
+        _animator.SetBool(_hashInputDetected, inputDetected);
 
 
         AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
 
         if (currentAnimStateInfo.shortNameHash == _hashMovement || currentAnimStateInfo.shortNameHash == _hashMovementBack)
         {
-            if ((_previousAnimState.shortNameHash != _hashMovement && _previousAnimState.shortNameHash != _hashMovementBack) || forwardVelocity > 0.0f || _inputIsLooking)
+            if ((_previousAnimState.shortNameHash != _hashMovement && _previousAnimState.shortNameHash != _hashMovementBack) || inputDetected)
             {
                 _timeToIdle = maxTimeToIdle;
                 _animator.SetBool(_hashTimeToIdle, false);

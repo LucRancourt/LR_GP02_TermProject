@@ -37,7 +37,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Slide"",
+                    ""name"": ""Blink"",
                     ""type"": ""Button"",
                     ""id"": ""7ff66363-c924-4d53-a142-9c09523986c9"",
                     ""expectedControlType"": """",
@@ -225,7 +225,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Slide"",
+                    ""action"": ""Blink"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -353,7 +353,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
+        m_Player_Blink = m_Player.FindAction("Blink", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_JumpCancel = m_Player.FindAction("JumpCancel", throwIfNotFound: true);
@@ -429,7 +429,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Slide;
+    private readonly InputAction m_Player_Blink;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_JumpCancel;
@@ -443,7 +443,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         private @GameControls m_Wrapper;
         public PlayerActions(@GameControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @Slide => m_Wrapper.m_Player_Slide;
+        public InputAction @Blink => m_Wrapper.m_Player_Blink;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @JumpCancel => m_Wrapper.m_Player_JumpCancel;
@@ -464,9 +464,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Slide.started += instance.OnSlide;
-            @Slide.performed += instance.OnSlide;
-            @Slide.canceled += instance.OnSlide;
+            @Blink.started += instance.OnBlink;
+            @Blink.performed += instance.OnBlink;
+            @Blink.canceled += instance.OnBlink;
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
@@ -498,9 +498,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Slide.started -= instance.OnSlide;
-            @Slide.performed -= instance.OnSlide;
-            @Slide.canceled -= instance.OnSlide;
+            @Blink.started -= instance.OnBlink;
+            @Blink.performed -= instance.OnBlink;
+            @Blink.canceled -= instance.OnBlink;
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
@@ -563,7 +563,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnSlide(InputAction.CallbackContext context);
+        void OnBlink(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnJumpCancel(InputAction.CallbackContext context);
