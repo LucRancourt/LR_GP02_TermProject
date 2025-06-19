@@ -22,7 +22,7 @@ public class MeleeWeapon : Weapon
             ICanGetHit hit = target.GetComponent<ICanGetHit>();
 
             if (hit != null)
-                hit.Hit(damage, 10.0f);  //<-- Switch out
+                hit.Hit(damage, knockbackForce);  
             
             Debug.DrawRay(transform.position, HelpfulFunctions.GetDirection(target.transform.position, transform.position), Color.blue, 5.0f);
         }

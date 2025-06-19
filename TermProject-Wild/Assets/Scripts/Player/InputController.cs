@@ -21,10 +21,13 @@ public class InputController : MonoBehaviour
     public event Action CrouchEvent;
     public event Action CrouchCancelEvent;
 
-    public event Action<int> EquipEvent;
+    public event Action<float> EquipEvent;
     
     public event Action FireEvent;
     public event Action FireCancelEvent;
+
+    public event Action AimEvent;
+    public event Action AimCancelEvent;
 
     public event Action ReloadEvent;
 
@@ -56,6 +59,9 @@ public class InputController : MonoBehaviour
         
         _gameControls.Player.Fire.performed += OnFirePerformed;
         _gameControls.Player.Fire.canceled += OnFireCanceled;
+
+        _gameControls.Player.Aim.performed += OnAimPerformed;
+        _gameControls.Player.Aim.canceled += OnAimCanceled;
 
         _gameControls.Player.Reload.performed += OnReloadPerformed;
     }
@@ -102,7 +108,7 @@ public class InputController : MonoBehaviour
 
     private void OnEquipPerformed(InputAction.CallbackContext context)
     {
-        EquipEvent?.Invoke(context.ReadValue<int>());
+        EquipEvent?.Invoke(context.ReadValue<float>());
     }
 
     private void OnFirePerformed(InputAction.CallbackContext context)
@@ -113,6 +119,16 @@ public class InputController : MonoBehaviour
     private void OnFireCanceled(InputAction.CallbackContext context)
     {
         FireCancelEvent?.Invoke();
+    }
+
+    private void OnAimPerformed(InputAction.CallbackContext context)
+    {
+        AimEvent?.Invoke();
+    }
+
+    private void OnAimCanceled(InputAction.CallbackContext context)
+    {
+        AimCancelEvent?.Invoke();
     }
 
     private void OnReloadPerformed(InputAction.CallbackContext context)
@@ -139,6 +155,9 @@ public class InputController : MonoBehaviour
         
         _gameControls.Player.Fire.performed -= OnFirePerformed;
         _gameControls.Player.Fire.canceled -= OnFireCanceled;
+
+        _gameControls.Player.Aim.performed -= OnAimPerformed;
+        _gameControls.Player.Aim.canceled -= OnAimCanceled;
 
         _gameControls.Player.Reload.performed -= OnReloadPerformed;
 

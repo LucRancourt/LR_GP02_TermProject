@@ -91,6 +91,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Aim"",
+                    ""type"": ""Button"",
+                    ""id"": ""7db2e1c5-5b42-44d1-a253-81f670d29fdf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Reload"",
                     ""type"": ""Button"",
                     ""id"": ""644fdc9b-a95c-4c53-9f05-06c6e04f2c3a"",
@@ -101,12 +110,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""EquipItem"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""1c35b311-5d28-4a98-b9a4-2521db002934"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -247,9 +256,64 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""id"": ""cffdc0ef-c932-4e77-a529-4fc02089484d"",
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Scale"",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""EquipItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""79de7f6f-b9ab-4af6-807b-a779c1e5010b"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=2)"",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""EquipItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""187c6f18-1fc9-4701-887e-462cc75604f6"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=3)"",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""EquipItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c522a609-97df-479a-b57e-62487a9ab060"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=4)"",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""EquipItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d304ebfb-df06-4264-aec1-3fbf2fd10489"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": ""Scale(factor=5)"",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""EquipItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""34ca3084-a348-46fa-8247-db2bdd3e9a1f"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -295,6 +359,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_JumpCancel = m_Player.FindAction("JumpCancel", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_EquipItem = m_Player.FindAction("EquipItem", throwIfNotFound: true);
     }
@@ -370,6 +435,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_JumpCancel;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_EquipItem;
     public struct PlayerActions
@@ -383,6 +449,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @JumpCancel => m_Wrapper.m_Player_JumpCancel;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @Aim => m_Wrapper.m_Player_Aim;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @EquipItem => m_Wrapper.m_Player_EquipItem;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -415,6 +482,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
@@ -446,6 +516,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
@@ -496,6 +569,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnJumpCancel(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnEquipItem(InputAction.CallbackContext context);
     }

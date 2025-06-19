@@ -7,6 +7,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 
+[RequireComponent(typeof(HotbarInventory))]
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -22,11 +24,12 @@ public class PlayerMovement : MonoBehaviour
     
     // Cinemachines
     [SerializeField] private CinemachineStateDrivenCamera cmStateCamDriver;
-    
+    [SerializeField] private CinemachineCamera aimCam;
+
 
     // Weapon
-    [SerializeField] private Weapon equippedWeapon;
-    [SerializeField] private HotbarInventory weaponInventory;
+    private Weapon equippedWeapon;
+    private HotbarInventory weaponInventory;
 
 
     // Variables
@@ -41,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
     private readonly int _hashMovementBack = Animator.StringToHash("MovementBack");
 
 
-    // Parameters
+        // Parameters
 
     private readonly int _hashIsGrounded = Animator.StringToHash("IsGrounded");
     private readonly int _hashForwardVelocity = Animator.StringToHash("ForwardVelocity");
@@ -98,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform playerHands;
 
 
-        // Other
+    // Configs
     [SerializeField] private PlayerMovementConfig movementConfig;
     [SerializeField] private GroundCheck groundCheck;
 
@@ -117,6 +120,7 @@ public class PlayerMovement : MonoBehaviour
         _animator = GetComponent<Animator>();
         _previousAnimState = _animator.GetCurrentAnimatorStateInfo(0);
 
+        weaponInventory = GetComponent<HotbarInventory>();
 
         _inputTimeActiveSeconds = new WaitForSeconds(inputTimeActiveFloat);
     }
@@ -150,6 +154,9 @@ public class PlayerMovement : MonoBehaviour
             _inputController.FireEvent += HandleFireInput;
             _inputController.FireCancelEvent += HandleFireCancelInput;
 
+            _inputController.AimEvent += HandleAimInput;
+            _inputController.AimCancelEvent += HandleAimCancelInput;
+
             _inputController.ReloadEvent += HandleReloadInput;
         }
     }
@@ -175,7 +182,10 @@ public class PlayerMovement : MonoBehaviour
             _inputController.FireEvent -= HandleFireInput;
             _inputController.FireCancelEvent -= HandleFireCancelInput;
 
-            _inputController.ReloadEvent += HandleReloadInput;
+            _inputController.AimEvent -= HandleAimInput;
+            _inputController.AimCancelEvent -= HandleAimCancelInput;
+
+            _inputController.ReloadEvent -= HandleReloadInput;
         }
     }
 
@@ -223,13 +233,15 @@ public class PlayerMovement : MonoBehaviour
         _isJumping = false;
     }
 
-    private void HandleEquipInput(int index)
+    private void HandleEquipInput(float index)
     {
-        EquipWeapon(index);
+        EquipWeapon((int)index);
     }
 
     private void HandleFireInput()
     {
+        if (equippedWeapon == null) return;
+
         equippedWeapon.Use();
 
         StartCoroutine(SetInputVar(InputSwitchValues.Attack));
@@ -237,12 +249,28 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFireCancelInput()
     {
+        if (equippedWeapon == null) return;
+
         equippedWeapon.StopUsing();
+    }
+
+    private void HandleAimInput()
+    {
+        aimCam.gameObject.SetActive(true);
+        cmStateCamDriver.gameObject.SetActive(false);
+    }
+    private void HandleAimCancelInput()
+    {
+        cmStateCamDriver.gameObject.SetActive(true);
+        aimCam.gameObject.SetActive(false);
     }
 
     private void HandleReloadInput()
     {
-        //equippedWeapon.Reload(30);
+        if (equippedWeapon == null || equippedWeapon is MeleeWeapon) return;
+
+        RangedWeapon ranged = (RangedWeapon)equippedWeapon;
+        ranged.Reload(30);
     }
 
 
@@ -431,6 +459,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     // DESTROY EQUIPPED ITEM METHOD
+    /*
     private void EquipWeapon(int weaponIndex)
     {
         if (equippedWeapon != null)
@@ -442,8 +471,20 @@ public class PlayerMovement : MonoBehaviour
         
         equippedWeapon = Instantiate(weaponToEquip, playerHands);
     }
+    */
 
     // DE-ACTIVATE EQUIPPED ITEM METHOD
+    private void EquipWeapon(int weaponIndex)
+    {
+        if (equippedWeapon != null)
+            equippedWeapon.transform.gameObject.SetActive(false);
+
+        equippedWeapon = weaponInventory.ReturnItem(weaponIndex);
+
+        if (equippedWeapon == null) return;
+
+        equippedWeapon.transform.gameObject.SetActive(true);
+    }
 
 
 
@@ -480,7 +521,8 @@ public class PlayerMovement : MonoBehaviour
 
         _animator.ResetTrigger(_hashMeleeAttack);
 
-        if (_inputIsAttacking)
+        // Currently this because other weapons are guns and only anim is for punching/swinging
+        if (_inputIsAttacking && equippedWeapon is MeleeWeapon)
             _animator.SetTrigger(_hashMeleeAttack);
 
         _animator.SetBool(_hashInputDetected, _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero);
