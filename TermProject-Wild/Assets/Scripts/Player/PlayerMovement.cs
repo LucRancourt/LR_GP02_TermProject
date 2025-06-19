@@ -48,8 +48,9 @@ public class PlayerMovement : MonoBehaviour
     private readonly int _hashIsMovingForward = Animator.StringToHash("IsMovingForward");
     private readonly int _hashVerticalVelocity = Animator.StringToHash("VerticalVelocity");
     private readonly int _hashRandomIdle = Animator.StringToHash("RandomIdle");
-    private readonly int _hashIsInactive = Animator.StringToHash("IsInactive");
+    private readonly int _hashInputDetected = Animator.StringToHash("InputDetected");
     private readonly int _hashMeleeAttack = Animator.StringToHash("MeleeAttack");
+    private readonly int _hashTimeToIdle = Animator.StringToHash("TimeToIdle");
 
     #endregion
 
@@ -428,6 +429,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+
     // DESTROY EQUIPPED ITEM METHOD
     private void EquipWeapon(int weaponIndex)
     {
@@ -442,6 +444,21 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // DE-ACTIVATE EQUIPPED ITEM METHOD
+
+
+
+
+    // For Animator
+    public void MeleeAttackStart()
+    {
+        
+    }
+
+    public void MeleeAttackEnd()
+    {
+
+    }
+
 
 
     private void UpdateAnimatorVars()
@@ -466,7 +483,7 @@ public class PlayerMovement : MonoBehaviour
         if (_inputIsAttacking)
             _animator.SetTrigger(_hashMeleeAttack);
 
-        _animator.SetBool(_hashIsInactive, !_inputIsLooking && !_inputIsAttacking && !_inputIsJumping);
+        _animator.SetBool(_hashInputDetected, _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero);
 
 
         AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
@@ -474,16 +491,18 @@ public class PlayerMovement : MonoBehaviour
         if (currentAnimStateInfo.shortNameHash == _hashMovement || currentAnimStateInfo.shortNameHash == _hashMovementBack)
         {
             if ((_previousAnimState.shortNameHash != _hashMovement && _previousAnimState.shortNameHash != _hashMovementBack) || forwardVelocity > 0.0f || _inputIsLooking)
+            {
                 _timeToIdle = maxTimeToIdle;
+                _animator.SetBool(_hashTimeToIdle, false);
+            }
 
             if (_timeToIdle <= 0.0f)
             {
-                _animator.SetBool(_hashIsInactive, true);
+                _animator.SetBool(_hashTimeToIdle, true);
                 _timeToIdle = maxTimeToIdle;
             }
             else
             {
-                _animator.SetBool(_hashIsInactive, false);
                 _timeToIdle -= Time.deltaTime;
             }
         }
