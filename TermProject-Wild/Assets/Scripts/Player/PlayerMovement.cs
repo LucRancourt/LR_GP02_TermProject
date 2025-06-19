@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -35,6 +34,22 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float maxTimeToIdle = 5.0f;
     private float _timeToIdle = 5.0f;
+
+        // States
+
+    private readonly int _hashMovement = Animator.StringToHash("Movement");
+    private readonly int _hashMovementBack = Animator.StringToHash("MovementBack");
+
+
+    // Parameters
+
+    private readonly int _hashIsGrounded = Animator.StringToHash("IsGrounded");
+    private readonly int _hashForwardVelocity = Animator.StringToHash("ForwardVelocity");
+    private readonly int _hashIsMovingForward = Animator.StringToHash("IsMovingForward");
+    private readonly int _hashVerticalVelocity = Animator.StringToHash("VerticalVelocity");
+    private readonly int _hashRandomIdle = Animator.StringToHash("RandomIdle");
+    private readonly int _hashIsInactive = Animator.StringToHash("IsInactive");
+    private readonly int _hashMeleeAttack = Animator.StringToHash("MeleeAttack");
 
     #endregion
 
@@ -431,37 +446,44 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateAnimatorVars()
     {
-        _animator.SetBool("IsGrounded", groundCheck.IsGrounded);
+        _animator.SetBool(_hashIsGrounded, groundCheck.IsGrounded);
 
 
         float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
-        _animator.SetFloat("ForwardVelocity", forwardVelocity);
+        _animator.SetFloat(_hashForwardVelocity, forwardVelocity);
 
-        _animator.SetBool("IsMovingForward", Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
+        _animator.SetBool(_hashIsMovingForward, Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
 
 
-        _animator.SetFloat("VerticalVelocity", _controller.velocity.y);
+        _animator.SetFloat(_hashVerticalVelocity, _controller.velocity.y);
 
-        _animator.SetInteger("RandomIdle", Random.Range(0, 2));
 
-        // So if the camera moves you leave the Idle state
-        _animator.SetBool("IsInactive", !_inputIsLooking);
+        _animator.SetInteger(_hashRandomIdle, Random.Range(0, 2));
+
+
+        _animator.ResetTrigger(_hashMeleeAttack);
+
+        if (_inputIsAttacking)
+            _animator.SetTrigger(_hashMeleeAttack);
+
+        _animator.SetBool(_hashIsInactive, !_inputIsLooking && !_inputIsAttacking && !_inputIsJumping);
+
 
         AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
 
-        if (currentAnimStateInfo.IsName("Movement") || currentAnimStateInfo.IsName("MovementBack"))
+        if (currentAnimStateInfo.shortNameHash == _hashMovement || currentAnimStateInfo.shortNameHash == _hashMovementBack)
         {
-            if ((!_previousAnimState.IsName("Movement") && !_previousAnimState.IsName(("MovementBack")) || forwardVelocity > 0.0f || _inputIsLooking))
+            if ((_previousAnimState.shortNameHash != _hashMovement && _previousAnimState.shortNameHash != _hashMovementBack) || forwardVelocity > 0.0f || _inputIsLooking)
                 _timeToIdle = maxTimeToIdle;
 
             if (_timeToIdle <= 0.0f)
             {
-                _animator.SetBool("IsInactive", true);
+                _animator.SetBool(_hashIsInactive, true);
                 _timeToIdle = maxTimeToIdle;
             }
             else
             {
-                _animator.SetBool("IsInactive", false);
+                _animator.SetBool(_hashIsInactive, false);
                 _timeToIdle -= Time.deltaTime;
             }
         }
