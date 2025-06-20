@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 542d20a5a556a6b429cd28880208391c, type: 3}
-  m_Name: SO_GunRapidFire
+  m_Name: SO_GrenadeLauncher
   m_EditorClassIdentifier: 
-  damage: 1
-  projectileSpeed: 20
+  damage: 25
+  projectileSpeed: 0.8
   fireRate: 1
-  isAutomatic: 1
-  maxAmmo: 25
-  ammoRequired: 1
+  isAutomatic: 0
+  maxAmmo: 15
+  ammoRequired: 2

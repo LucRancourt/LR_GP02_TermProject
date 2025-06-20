@@ -6,8 +6,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RangedWeaponConfig", menuName = "Game Configs/RangedWeapon Config")]
 public class RangedWeaponConfig : ScriptableObject
 {
-    public float fireRate = 0.5f;
-    public float damage = 1.0f;
-    public float bulletSpeed = 5.0f;
+    [Header("General")]
+    public float damage;
+    public float projectileSpeed;
+    public float fireRate;
+    public bool isAutomatic;
+
+
+    [Header("Ammo")]
+    public int maxAmmo;
+    public int ammoRequired;
 }
 

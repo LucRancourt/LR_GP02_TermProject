@@ -10,7 +10,7 @@ public class ProjectileWeapon : RangedWeapon
     // Functions
     private void Start()
     {
-        _projectileManager = new ProjectileManager(maxAmmo, projectile);
+        _projectileManager = new ProjectileManager(rangedWeaponConfig.maxAmmo, projectile, rangedWeaponConfig.damage, rangedWeaponConfig.projectileSpeed);
     }
     
     public override void Use()

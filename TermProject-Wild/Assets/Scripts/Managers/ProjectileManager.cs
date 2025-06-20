@@ -2,8 +2,17 @@ using UnityEngine;
 
 public class ProjectileManager : BasePoolManager
 {
+    // Variables
+    private float _damage;
+    private float _speed;
+
+
     // Constructor 
-    public ProjectileManager(int numberOfProjectiles, Projectile projectilePrefab) : base(numberOfProjectiles, projectilePrefab.gameObject) { }
+    public ProjectileManager(int numberOfProjectiles, Projectile projectilePrefab, float damage, float speed) : base(numberOfProjectiles, projectilePrefab.gameObject) 
+    { 
+        _damage = damage;
+        _speed = speed;
+    }
 
     
     // Functions
@@ -14,6 +23,6 @@ public class ProjectileManager : BasePoolManager
         if (!projectileToFire)
             return;
 
-        projectileToFire.GetComponent<Projectile>().SetupProjectile(spawnPosition, direction);
+        projectileToFire.GetComponent<Projectile>().SetupProjectile(spawnPosition, direction, _damage, _speed);
     }
 }

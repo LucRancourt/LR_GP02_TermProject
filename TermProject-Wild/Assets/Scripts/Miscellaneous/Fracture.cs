@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class Fracture : MonoBehaviour
+public class Fracture : MonoBehaviour, IDamageable
 {
     // Variables
     [TooltipAttribute("Only works if you have a second version of the Object that is pre-fractured")]
     [SerializeField] private GameObject fracturedVersion;
     [SerializeField] private float breakForce;
-    
-    
+
+
     // Functions
-    void OnCollisionEnter(Collision collision)
+    public void TakeDamage(float damage)
     {
         GameObject fract = Instantiate(fracturedVersion, transform.position, transform.rotation);
 

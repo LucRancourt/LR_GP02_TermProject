@@ -6,10 +6,12 @@ public class Projectile : MonoBehaviour
 {
     // Variables
     protected Rigidbody rb;
-    
-    [SerializeField] protected float speed = 1.0f;
+
+    private float _damage;
+    protected float speed = 1.0f;
     
     [SerializeField] private float lifeTime = 5.0f;
+
     
     
     
@@ -27,11 +29,14 @@ public class Projectile : MonoBehaviour
         rb.useGravity = false;
     }
 
-    public void SetupProjectile(Vector3 startPos, Quaternion direction)
+    public void SetupProjectile(Vector3 startPos, Quaternion direction, float damage, float projSpeed)
     {
         transform.position = startPos;
         transform.rotation = direction;
-        
+
+        _damage = damage;
+        speed = projSpeed;
+
         gameObject.SetActive(true);
     }
     
@@ -62,5 +67,14 @@ public class Projectile : MonoBehaviour
 
     protected virtual void Move()
     {
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent(out IDamageable damageable))
+        {
+            damageable.TakeDamage(_damage);
+            gameObject.SetActive(false);
+        }
     }
 }

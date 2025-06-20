@@ -15,7 +15,7 @@ MonoBehaviour:
   damage: 15
   knockbackForce: 15
   hitboxCenter: {x: 0, y: 0, z: 0}
-  hitboxExtents: {x: 0.1, y: 0.1, z: 2.2}
+  hitboxExtents: {x: 0.2, y: 0.2, z: 2.25}
   hitboxMask:
     serializedVersion: 2
     m_Bits: 256

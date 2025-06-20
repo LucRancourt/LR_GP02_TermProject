@@ -4,7 +4,6 @@ public class HitscanWeapon : RangedWeapon
 {
     // Variables
     [SerializeField] private float range = 100.0f;
-    
     [SerializeField] private LayerMask targetLayer;
     
     

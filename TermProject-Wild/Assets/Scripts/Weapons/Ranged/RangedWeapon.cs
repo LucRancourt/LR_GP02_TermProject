@@ -3,16 +3,9 @@ using UnityEngine;
 public class RangedWeapon : Weapon
 {
     // Variables
-    [Header("Ranged Details")]
-    [SerializeField] private bool isAutomatic = false;
+    [SerializeField] protected RangedWeaponConfig rangedWeaponConfig;
     private bool _autoActive;
-    
-    [SerializeField] protected Transform muzzle;
-    
-    [Header("Ammo Details")]
-    [SerializeField] protected int maxAmmo = 50;
     private int _currentAmmo = 0;
-    [SerializeField] private int ammoRequired = 1;
     
     
     // Functions
@@ -20,7 +13,7 @@ public class RangedWeapon : Weapon
     {
         base.Awake();
         
-        _currentAmmo = maxAmmo;
+        _currentAmmo = rangedWeaponConfig.maxAmmo;
     }
     
     private void Update()
@@ -33,9 +26,9 @@ public class RangedWeapon : Weapon
     {
         base.Use();
         
-        _currentAmmo = Mathf.Clamp(_currentAmmo -= ammoRequired, 0, maxAmmo);
+        _currentAmmo = Mathf.Clamp(_currentAmmo -= rangedWeaponConfig.ammoRequired, 0, rangedWeaponConfig.maxAmmo);
         
-        if (isAutomatic)
+        if (rangedWeaponConfig.isAutomatic)
             _autoActive = true;
 
         
@@ -45,7 +38,7 @@ public class RangedWeapon : Weapon
     
     public override void StopUsing()
     {
-        if (isAutomatic)
+        if (rangedWeaponConfig.isAutomatic)
             _autoActive = false;
     }
     
@@ -53,11 +46,11 @@ public class RangedWeapon : Weapon
 
     public virtual void Reload(int ammoToAdd)
     {
-        _currentAmmo = Mathf.Clamp(_currentAmmo + ammoToAdd, 0, maxAmmo);
+        _currentAmmo = Mathf.Clamp(_currentAmmo + ammoToAdd, 0, rangedWeaponConfig.maxAmmo);
     }
 
     protected bool CanFire()
     {
-        return ammoRequired <= _currentAmmo && CanUse();
+        return rangedWeaponConfig.ammoRequired <= _currentAmmo && CanUse();
     }
 }
