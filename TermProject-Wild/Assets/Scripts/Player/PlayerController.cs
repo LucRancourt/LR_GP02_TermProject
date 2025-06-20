@@ -353,14 +353,8 @@ public class PlayerController : MonoBehaviour
     #endregion
 
 
-    private void Update()
-    {
-        //UpdateAnimatorVars();
-    }
-
     private void FixedUpdate()
     {
-        UpdateAnimatorVars();
         Look();
 
         if (_isBlinking)
@@ -379,6 +373,7 @@ public class PlayerController : MonoBehaviour
 
         ApplyAccelDecelRates();
 
+        UpdateAnimatorVars();
 
         _moveVelocity = _targetVelocity;
 
