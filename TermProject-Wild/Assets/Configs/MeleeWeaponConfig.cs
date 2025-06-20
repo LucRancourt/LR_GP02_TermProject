@@ -13,4 +13,6 @@ public class MeleeWeaponConfig : ScriptableObject
     public Vector3 hitboxExtents;
     
     public LayerMask hitboxMask;
+
+    //public float attackCooldown;
 }

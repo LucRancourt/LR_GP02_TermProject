@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     private readonly int _hashInputDetected = Animator.StringToHash("InputDetected");
     private readonly int _hashMeleeAttack = Animator.StringToHash("MeleeAttack");
     private readonly int _hashTimeToIdle = Animator.StringToHash("TimeToIdle");
+    private readonly int m_hashStateTime = Animator.StringToHash("StateTime");
 
     #endregion
 
@@ -271,7 +272,8 @@ public class PlayerController : MonoBehaviour
     {
         if (equippedWeapon == null) return;
 
-        equippedWeapon.Use();
+        if (equippedWeapon is RangedWeapon)
+            equippedWeapon.Use();
 
         StartCoroutine(SetInputVar(InputSwitchValues.Attack));
     }
@@ -353,11 +355,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        UpdateAnimatorVars();
+        //UpdateAnimatorVars();
     }
 
     private void FixedUpdate()
     {
+        UpdateAnimatorVars();
         Look();
 
         if (_isBlinking)
@@ -564,13 +567,13 @@ public class PlayerController : MonoBehaviour
 
 
 
-    // For Animator
-    public void MeleeAttackStart()
+    // For Animator Animation Event
+    public void MeleeAttackStart()  // Frame the Attack should Start
     {
-        
+        equippedWeapon.Use();
     }
 
-    public void MeleeAttackEnd()
+    public void MeleeAttackEnd()    // Frame the Attack should End
     {
 
     }
@@ -623,11 +626,13 @@ public class PlayerController : MonoBehaviour
         _animator.SetInteger(_hashRandomIdle, Random.Range(0, 2));
 
 
+        _animator.SetFloat(m_hashStateTime, Mathf.Repeat(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
         _animator.ResetTrigger(_hashMeleeAttack);
 
         // Currently this because other weapons are guns and only anim is for punching/swinging
         if (_inputIsAttacking && equippedWeapon is MeleeWeapon)
             _animator.SetTrigger(_hashMeleeAttack);
+
 
         bool inputDetected = _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero || _isBlinking;
         _animator.SetBool(_hashInputDetected, inputDetected);
