@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95814f00cbf1d5f458dd803e4b4d61fe, type: 3}
-  m_Name: ExaggeratedControlConfig
+  m_Name: SO_ExaggeratedControl
   m_EditorClassIdentifier: 
   targetMoveSpeed: 10
   accelerationRate: 5

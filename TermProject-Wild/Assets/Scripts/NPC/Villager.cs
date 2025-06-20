@@ -1,14 +1,24 @@
 using UnityEngine;
 
-public class Villager : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Rigidbody))]
+
+public class Villager : MonoBehaviour, IInteractable, IDamageable
 {
     // Variables
     [SerializeField] private string message = "Empty Message";
-    
+    [SerializeField] private float health = 100.0f;
     
     // Functions
     public void Interact()
     {
         Debug.Log(message);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        if (health <= 0.0f)
+            Destroy(this.gameObject);
     }
 }

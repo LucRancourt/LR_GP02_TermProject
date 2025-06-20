@@ -3,8 +3,8 @@ using UnityEngine;
 public class ProjectileManager : BasePoolManager
 {
     // Constructor 
-    public ProjectileManager(int numberOfBullets, Projectile projectilePrefab) : base(numberOfBullets, projectilePrefab.gameObject) { }
-    
+    public ProjectileManager(int numberOfProjectiles, Projectile projectilePrefab) : base(numberOfProjectiles, projectilePrefab.gameObject) { }
+
     
     // Functions
     public void Fire(Vector3 spawnPosition, Quaternion direction)

@@ -13,17 +13,19 @@ public class MeleeWeapon : Weapon
         
         base.Use();
 
+
         Vector3 hitboxCenter = GetHitboxCenter();
 
         Collider[] hitTargets = Physics.OverlapBox(hitboxCenter, meleeConfig.hitboxExtents, transform.rotation, meleeConfig.hitboxMask);
 
         foreach (Collider target in hitTargets)
         {
-            ICanGetHit hit = target.GetComponent<ICanGetHit>();
+            if (target.TryGetComponent(out IDamageable damageable))
+            {
+                Knockback(target.gameObject);
+                damageable.TakeDamage(meleeConfig.damage);
+            }
 
-            if (hit != null)
-                hit.Hit(meleeConfig.damage, meleeConfig.knockbackForce);  
-            
             Debug.DrawRay(transform.position, HelpfulFunctions.GetDirection(target.transform.position, transform.position), Color.blue, 5.0f);
         }
     }
@@ -42,8 +44,13 @@ public class MeleeWeapon : Weapon
         Gizmos.DrawCube(GetHitboxCenter(), meleeConfig.hitboxExtents);
     }
 
-    public override void StopUsing()
+    public void Knockback(GameObject target)
     {
-        
+        if (target.TryGetComponent(out Rigidbody targetRb))
+        {
+            Vector3 knockbackDirection = HelpfulFunctions.GetDirection(target.transform.position, transform.position);
+
+            targetRb.AddForce(knockbackDirection * meleeConfig.knockbackForce, ForceMode.Impulse);
+        }
     }
 }

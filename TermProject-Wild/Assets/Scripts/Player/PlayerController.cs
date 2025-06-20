@@ -108,9 +108,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public float interactCheckRadius = 0.2f;
     [SerializeField] public LayerMask interactLayer;
     #endregion
-    
-    [SerializeField] private Transform playerHands;
-
+   
 
     // Configs
     [SerializeField] private PlayerControllerConfig playerControlConfig;
