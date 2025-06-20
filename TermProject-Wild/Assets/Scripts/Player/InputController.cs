@@ -6,9 +6,10 @@ public class InputController : MonoBehaviour
 {
     // Variables
     private GameControls _gameControls;
-    
-    
+
+
     // Events + Methods
+    #region Actions
     public event Action<Vector2> MoveEvent;
     
     public event Action<Vector2> LookEvent;
@@ -32,6 +33,9 @@ public class InputController : MonoBehaviour
     public event Action ReloadEvent;
 
     public event Action InteractEvent;
+
+    public event Action SwitchPOVEvent;
+    #endregion
 
 
     // Functions
@@ -68,8 +72,11 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Reload.performed += OnReloadPerformed;
 
         _gameControls.Player.Interact.performed += OnInteractPerformed;
+
+        _gameControls.Player.SwitchPOV.performed += OnSwitchPOVPerformed;
     }
 
+    #region Handlers
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         MoveEvent?.Invoke(context.ReadValue<Vector2>());
@@ -145,6 +152,12 @@ public class InputController : MonoBehaviour
         InteractEvent?.Invoke();
     }
 
+    private void OnSwitchPOVPerformed(InputAction.CallbackContext context)
+    {
+        SwitchPOVEvent?.Invoke();
+    }
+    #endregion
+
     private void OnDisable()
     {
         _gameControls.Player.Move.performed -= OnMovePerformed;
@@ -171,7 +184,9 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Reload.performed -= OnReloadPerformed;
 
         _gameControls.Player.Interact.performed -= OnInteractPerformed;
-        
+
+        _gameControls.Player.SwitchPOV.performed -= OnSwitchPOVPerformed;
+
         _gameControls.Player.Disable();
     }
 }

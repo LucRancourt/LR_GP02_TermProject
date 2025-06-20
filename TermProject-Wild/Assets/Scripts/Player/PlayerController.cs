@@ -20,11 +20,17 @@ public class PlayerController : MonoBehaviour
     // Controllers
     private CharacterController _controller;
     private InputController _inputController;
-    
-    
+
+
     // Cinemachines
+    [Header("Camera")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private LayerMask playerCullMask;
+    [SerializeField] private LayerMask allMask;
     [SerializeField] private CinemachineStateDrivenCamera cmStateCamDriver;
     [SerializeField] private CinemachineCamera aimCam;
+    [SerializeField] private CinemachineCamera firstPersonCam;
+    [SerializeField] private CinemachineCamera thirdPersonCam;
 
 
     // Weapon
@@ -33,8 +39,9 @@ public class PlayerController : MonoBehaviour
 
 
     // Variables
-    #region Animator
+    [Header("Variable Values")]
 
+    #region Animator
     [SerializeField] private float maxTimeToIdle = 5.0f;
     private float _timeToIdle = 5.0f;
 
@@ -102,6 +109,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Checks
+    [Header("Checks")]
     [SerializeField] private float slopeCheckDistance = 1f;
     
     [SerializeField] public float interactCheckDistance = 1.0f;
@@ -111,6 +119,7 @@ public class PlayerController : MonoBehaviour
    
 
     // Configs
+    [Header("Configs")]
     [SerializeField] private PlayerControllerConfig playerControlConfig;
     [SerializeField] private GroundCheck groundCheck;
 
@@ -168,6 +177,8 @@ public class PlayerController : MonoBehaviour
             _inputController.ReloadEvent += HandleReloadInput;
             
             _inputController.InteractEvent += HandleInteractInput;
+
+            _inputController.SwitchPOVEvent += HandleSwitchPOVInput;
         }
     }
 
@@ -198,6 +209,8 @@ public class PlayerController : MonoBehaviour
             _inputController.ReloadEvent -= HandleReloadInput;
 
             _inputController.InteractEvent -= HandleInteractInput;
+
+            _inputController.SwitchPOVEvent -= HandleSwitchPOVInput;
         }
     }
 
@@ -292,6 +305,19 @@ public class PlayerController : MonoBehaviour
     private void HandleInteractInput()
     {
         AttemptInteract();
+    }
+
+    private void HandleSwitchPOVInput()
+    {
+        int firstPersonCamPriority = firstPersonCam.Priority;
+        firstPersonCam.Priority = thirdPersonCam.Priority;
+        thirdPersonCam.Priority = firstPersonCamPriority;
+
+        // If in 1stPerson - Cull out the PlayerCharacter
+        if (firstPersonCam.Priority > thirdPersonCam.Priority)
+            mainCamera.cullingMask = playerCullMask;
+        else
+            mainCamera.cullingMask = allMask;
     }
 
 

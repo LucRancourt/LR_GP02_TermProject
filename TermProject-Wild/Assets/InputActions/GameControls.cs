@@ -125,6 +125,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchPOV"",
+                    ""type"": ""Button"",
+                    ""id"": ""e2855a9c-f96a-450e-b418-655674b398ef"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -490,6 +499,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9574abcb-747f-455a-8a88-192328961413"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SwitchPOV"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -548,6 +568,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_EquipItem = m_Player.FindAction("EquipItem", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_SwitchPOV = m_Player.FindAction("SwitchPOV", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -625,6 +646,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_EquipItem;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_SwitchPOV;
     public struct PlayerActions
     {
         private @GameControls m_Wrapper;
@@ -640,6 +662,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @EquipItem => m_Wrapper.m_Player_EquipItem;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @SwitchPOV => m_Wrapper.m_Player_SwitchPOV;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -682,6 +705,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @SwitchPOV.started += instance.OnSwitchPOV;
+            @SwitchPOV.performed += instance.OnSwitchPOV;
+            @SwitchPOV.canceled += instance.OnSwitchPOV;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -719,6 +745,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @SwitchPOV.started -= instance.OnSwitchPOV;
+            @SwitchPOV.performed -= instance.OnSwitchPOV;
+            @SwitchPOV.canceled -= instance.OnSwitchPOV;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -776,5 +805,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnReload(InputAction.CallbackContext context);
         void OnEquipItem(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnSwitchPOV(InputAction.CallbackContext context);
     }
 }

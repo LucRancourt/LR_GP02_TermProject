@@ -14,7 +14,6 @@ public static class HelpfulFunctions
     }
 
 
-
         // Ints
     public static int Clamp(int valueToClamp, int min, int max)
     {
