@@ -3,8 +3,6 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour
 {
     // Variables
-    [SerializeField] private PlayerControllerConfig _playerControlConfig;
-    
     public bool IsGrounded { get; private set; }
     [SerializeField] private float groundCheckDistance = 0.075f;
     [SerializeField] private LayerMask groundLayer;
@@ -35,13 +33,7 @@ public class GroundCheck : MonoBehaviour
         //              within a small shape positioned just below the character feet. Simple true/false check,
         //              efficient but provides less information (like distance or surface normal) than casts.
 
-        if (Physics.CheckSphere(transform.position + Vector3.down * groundCheckDistance, .25f, groundLayer))
-            IsGrounded = true;
-
-
-        // No Ground
-        else
-            IsGrounded = false;
+        IsGrounded = Physics.CheckSphere(transform.position + Vector3.down * groundCheckDistance, .25f, groundLayer);
     }
 
     private void OnDrawGizmos()

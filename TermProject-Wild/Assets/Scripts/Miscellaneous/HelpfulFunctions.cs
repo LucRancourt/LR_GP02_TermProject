@@ -51,4 +51,26 @@ public static class HelpfulFunctions
         else if (valueToClamp < min)
             valueToClamp = min;
     }
+
+
+
+    public static Vector3 MoveToWithoutVertical(Vector3 position, Vector3 target, float speed)
+    {
+        float currentHeight = position.y;
+        
+        Vector3 newPos = Vector3.MoveTowards(position, target, speed * Time.deltaTime);
+        
+        newPos.y = currentHeight;
+
+        return newPos;
+    }
+
+
+
+    public static int RandomOne()
+    {
+        int value = Random.Range(0, 2) * 2 - 1;
+        Debug.Log(value);
+        return value;
+    }
 }

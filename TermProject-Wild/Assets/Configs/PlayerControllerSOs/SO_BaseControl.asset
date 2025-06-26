@@ -24,17 +24,7 @@ MonoBehaviour:
   initialJumpForce: 468
   holdtimeJumpForce: 22
   maxJumpHoldTime: 0.3
-  groundCheckDistance: 0.075
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  slopeCheckDistance: 1
-  interactCheckDistance: 1
-  interactCheckRadius: 0.2
-  interactLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  lookSpeed: 0.3
+  lookSpeed: 0.25
   lookSmoothTime: 0.05
   xCameraBounds: 45
   gravityForce: -32
