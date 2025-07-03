@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum EnemyAIStates
 {
@@ -10,6 +11,8 @@ public enum EnemyAIStates
 }
 
 
+
+[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private EnemyAIStates currentState = EnemyAIStates.Idle;
@@ -36,6 +39,18 @@ public class EnemyAI : MonoBehaviour
     private GameObject _currentTarget;
     private Vector3 _targetPosition;
 
+    [Header("NavMeshAgent")]
+    private NavMeshAgent _navMeshAgent;
+    [SerializeField] private float stoppingDistance = 5.0f;
+
+
+
+    // Functions
+    private void Start()
+    {
+        _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent.stoppingDistance = stoppingDistance;
+    }
 
     private void Update()
     {
@@ -121,9 +136,10 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Chase");
 
         RotateTowardsTarget();
-        
-        
-        transform.position = Vector3.MoveTowards(transform.position, _currentTarget.transform.position, chaseSpeed * Time.deltaTime);
+
+
+        _navMeshAgent.SetDestination(_currentTarget.transform.position);
+        //transform.position = Vector3.MoveTowards(transform.position, _currentTarget.transform.position, chaseSpeed * Time.deltaTime);
         
         float currentDistance = Vector3.Distance(transform.position, _currentTarget.transform.position);
 
