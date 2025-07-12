@@ -22,7 +22,7 @@ public class InputController : MonoBehaviour
     public event Action CrouchEvent;
     public event Action CrouchCancelEvent;
 
-    public event Action<float> EquipEvent;
+    public event Action<int> EquipEvent;
     
     public event Action FireEvent;
     public event Action FireCancelEvent;
@@ -119,7 +119,7 @@ public class InputController : MonoBehaviour
 
     private void OnEquipPerformed(InputAction.CallbackContext context)
     {
-        EquipEvent?.Invoke(context.ReadValue<float>());
+        EquipEvent?.Invoke((int)context.ReadValue<float>());
     }
 
     private void OnFirePerformed(InputAction.CallbackContext context)

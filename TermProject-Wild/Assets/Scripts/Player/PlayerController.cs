@@ -263,9 +263,9 @@ public class PlayerController : MonoBehaviour
         _isJumping = false;
     }
 
-    private void HandleEquipInput(float index)
+    private void HandleEquipInput(int index)
     {
-        EquipWeapon((int)index);
+        EquipWeapon(index);
     }
 
     private void HandleFireInput()
