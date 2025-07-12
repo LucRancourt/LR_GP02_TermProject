@@ -5,13 +5,15 @@ public class GroundCheck : MonoBehaviour
     // Variables
     public bool IsGrounded { get; private set; }
     [SerializeField] private float groundCheckDistance = 0.075f;
-    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask layersToExclude;
 
     
     // Functions
     private void Start()
     {
         GetComponent<Renderer>().enabled = false;
+
+        layersToExclude = ~layersToExclude;
     }
 
     private void Update()
@@ -24,7 +26,7 @@ public class GroundCheck : MonoBehaviour
         // OPTION 2 - Physics.SphereCast / Physics.CapsuleCast: Sweeps a shape downwards.
         //              More robust than a single ray for uneven surfaces or larger character bases as it checks a volume.
         //          Can fail if the Starting Shape is already clipping the surface below (ex: if on a Slope)
-        
+
         //if (Physics.SphereCast(transform.position, .25f, Vector3.down, out RaycastHit hit, _movementConfig.groundCheckDistance, _groundLayer))
         //    IsGrounded = true;
 
@@ -33,7 +35,7 @@ public class GroundCheck : MonoBehaviour
         //              within a small shape positioned just below the character feet. Simple true/false check,
         //              efficient but provides less information (like distance or surface normal) than casts.
 
-        IsGrounded = Physics.CheckSphere(transform.position + Vector3.down * groundCheckDistance, .25f, groundLayer);
+        IsGrounded = Physics.CheckSphere(transform.position + Vector3.down * groundCheckDistance, .2f, layersToExclude);
     }
 
     private void OnDrawGizmos()
@@ -44,6 +46,6 @@ public class GroundCheck : MonoBehaviour
         */
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position + Vector3.down * groundCheckDistance, .25f);
+        Gizmos.DrawWireSphere(transform.position + Vector3.down * groundCheckDistance, .2f);
     }
 }

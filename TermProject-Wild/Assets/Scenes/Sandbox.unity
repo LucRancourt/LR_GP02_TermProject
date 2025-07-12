@@ -3153,6 +3153,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1316438141194562933, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
+      propertyPath: groundCheckDistance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1316438141194562933, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
+      propertyPath: layersToExclude.m_Bits
+      value: 758
+      objectReference: {fileID: 0}
     - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
       propertyPath: aimCam
       value: 
