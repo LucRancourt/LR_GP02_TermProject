@@ -13,11 +13,19 @@ public class Villager : MonoBehaviour, IDamageable
         Debug.Log(message);
     }
 
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        if (health <= 0.0f)
+            Destroy(gameObject);
+    }
+
     public void TakeDamage(float damage, GameObject caller)
     {
         health -= damage;
 
         if (health <= 0.0f)
-            Destroy(this.gameObject);
+            Destroy(gameObject);
     }
 }

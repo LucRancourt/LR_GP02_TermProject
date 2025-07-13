@@ -707,6 +707,24 @@ public class PlayerController : MonoBehaviour, IDamageable
         enabled = true;
     }
 
+
+    public void TakeDamage(float damage)
+    {
+        if (_isHurt || _currentHealth <= 0.0f) return;
+
+        _currentHealth -= damage;
+
+
+        if (_currentHealth <= 0.0f)
+        {
+            Dead();
+        }
+        else
+        {
+            SetDamagedVars(Vector3.zero);
+        }
+    }
+
     public void TakeDamage(float damage, GameObject caller)
     {
         if (_isHurt || _currentHealth <= 0.0f) return;
@@ -716,24 +734,34 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (_currentHealth <= 0.0f)
         {
-            enabled = false;
-            _animator.SetTrigger(_hashDead);
-            _animator.ResetTrigger(_hashRespawn);
-            Invoke("Respawn", respawnDelay);
+            Dead();
         }
         else
         {
-            _animator.SetTrigger(_hashHurt);
-
             Vector3 hurtDirection = HelpfulFunctions.GetDirection(caller.transform.position, transform.position);
             // Convert from World to Local space (the Direction should be relative to the Player)
             hurtDirection = transform.InverseTransformDirection(hurtDirection);
 
-            _animator.SetFloat(_hashHurtDirectionX, hurtDirection.x);
-            _animator.SetFloat(_hashHurtDirectionZ, hurtDirection.z);
-
-            StartCoroutine(SetInputVar(InputSwitchValues.Hurt));
+            SetDamagedVars(hurtDirection);
         }
+    }
+
+    private void SetDamagedVars(Vector3 hurtDirection)
+    {
+        _animator.SetTrigger(_hashHurt);
+
+        _animator.SetFloat(_hashHurtDirectionX, hurtDirection.x);
+        _animator.SetFloat(_hashHurtDirectionZ, hurtDirection.z);
+
+        StartCoroutine(SetInputVar(InputSwitchValues.Hurt));
+    }
+
+    private void Dead()
+    {
+        enabled = false;
+        _animator.SetTrigger(_hashDead);
+        _animator.ResetTrigger(_hashRespawn);
+        Invoke("Respawn", respawnDelay);
     }
 }
 
