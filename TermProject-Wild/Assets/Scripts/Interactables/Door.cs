@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using DG.Tweening;
 
 public class Door : MonoBehaviour
@@ -15,6 +16,8 @@ public class Door : MonoBehaviour
     [SerializeField] private float shakeStrength = 1.0f;
     [SerializeField] private float shakeDuration = 2.0f;
     private Vector3 shakeStrengthVector = Vector3.zero;
+
+    [SerializeField] private UnityEvent OnAnimComplete;
 
 
     // Functions
@@ -43,8 +46,17 @@ public class Door : MonoBehaviour
 
         // Close
         _closingSequence.Append(transform.DOMoveY(transform.position.y, doorMovementDuration));
+
+
+
+        // For Lever
+        _openingSequence.OnComplete(() => { OnAnimComplete.Invoke(); }); ;
+        _closingSequence.OnComplete(() => { OnAnimComplete.Invoke(); }); ;
     }
 
+
+
+    // Toggle Method
     public void ToggleDoor()
     {
         if (_closingSequence.IsPlaying() || _openingSequence.IsPlaying()) return;
@@ -66,5 +78,27 @@ public class Door : MonoBehaviour
 
             _openingSequence.Restart();
         }
+    }
+
+
+    // Separate Method
+    public void OpenDoor()
+    {
+        if (_closingSequence.IsPlaying() || _openingSequence.IsPlaying()) return;
+        if (_hasBeenOpened && !canBeReOpened) return;
+
+        _isOpen = true;
+        _hasBeenOpened = true;
+
+        _openingSequence.Restart();
+    }
+
+    public void CloseDoor()
+    {
+        if (_closingSequence.IsPlaying() || _openingSequence.IsPlaying()) return;
+
+        _isOpen = false;
+
+        _closingSequence.Restart();
     }
 }
