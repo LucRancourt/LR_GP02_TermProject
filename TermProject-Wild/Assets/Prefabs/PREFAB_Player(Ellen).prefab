@@ -108,10 +108,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0266f4d687e965c4ab861c1454294248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheckDistance: 0.075
-  groundLayer:
+  groundCheckDistance: 0.1
+  groundCheckRadius: 0.2
+  layersToExclude:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 758
 --- !u!23 &556260429675538609
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1815,9 +1816,11 @@ MonoBehaviour:
   thirdPersonCam: {fileID: 0}
   maxTimeToIdle: 55
   lookTarget: {fileID: 2020283017146748214}
+  respawnDelay: 5
+  maxHealth: 100
   inputTimeActiveFloat: 0.5
   slopeCheckDistance: 1
-  interactCheckDistance: 1
+  interactCheckDistance: 1.5
   interactCheckRadius: 0.2
   interactLayer:
     serializedVersion: 2
