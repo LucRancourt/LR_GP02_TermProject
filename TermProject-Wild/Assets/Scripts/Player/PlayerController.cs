@@ -13,8 +13,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
-    [SerializeField] private InputActionAsset playerInputAction;
-
     // Animator
     private Animator _animator;
     private AnimatorStateInfo _previousAnimState;
@@ -707,7 +705,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         transform.position = _respawnLocation;
         _controller.enabled = true;
 
-        playerInputAction.Enable();
+        enabled = true;
     }
 
     public void TakeDamage(float damage, GameObject caller)
@@ -719,7 +717,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (_currentHealth <= 0.0f)
         {
-            playerInputAction.Disable();
+            enabled = false;
             _animator.SetTrigger(_hashDead);
             _animator.ResetTrigger(_hashRespawn);
             Invoke("Respawn", respawnDelay);

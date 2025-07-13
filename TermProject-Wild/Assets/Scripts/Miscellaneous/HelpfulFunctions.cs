@@ -68,6 +68,7 @@ public static class HelpfulFunctions
     }
 
 
+
     public static int Min(int a, int b)
     {
         return a < b ? a : b;
@@ -107,27 +108,11 @@ public static class HelpfulFunctions
 
     public static bool Approximately(Vector3 a, Vector3 b, bool ignoreY = false)
     {
-
         if (Abs(b.x - a.x) < Max(1E-06f * Max(Abs(a.x), Abs(b.x)), Mathf.Epsilon * 8f))
-        {
-            Debug.Log("X");
             if ((Abs(b.y - a.y) < Max(1E-06f * Max(Abs(a.y), Abs(b.y)), Mathf.Epsilon * 8f)) || ignoreY)
-            {
-                Debug.Log(ignoreY);
                 if (Abs(b.z - a.z) < Max(1E-06f * Max(Abs(a.z), Abs(b.z)), Mathf.Epsilon * 8f))
-                {
-                    Debug.Log("Z");
                     return true;
-                }
-            }
-        }
 
-        /*
-        if (a.x >= b.x - Mathf.Epsilon && a.x <= b.x + Mathf.Epsilon)
-            if ((a.y >= b.y - Mathf.Epsilon && a.y <= b.y + Mathf.Epsilon) || ignoreY)
-                if (a.z >= b.z - Mathf.Epsilon && a.z <= b.z + Mathf.Epsilon)
-                    return true;
-        */
         return false;
     }
 
