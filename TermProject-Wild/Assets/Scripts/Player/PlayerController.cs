@@ -726,7 +726,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         {
             _animator.SetTrigger(_hashHurt);
 
-            Vector3 hurtDirection = HelpfulFunctions.GetDirection(caller.transform.forward, transform.forward);
+            Vector3 hurtDirection = HelpfulFunctions.GetDirection(caller.transform.position, transform.position);
+            // Convert from World to Local space (the Direction should be relative to the Player)
+            hurtDirection = transform.InverseTransformDirection(hurtDirection);
 
             _animator.SetFloat(_hashHurtDirectionX, hurtDirection.x);
             _animator.SetFloat(_hashHurtDirectionZ, hurtDirection.z);

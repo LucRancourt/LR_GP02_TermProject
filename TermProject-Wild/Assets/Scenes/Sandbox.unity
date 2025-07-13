@@ -1309,7 +1309,7 @@ MonoBehaviour:
   inRangeLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  losRadius: 2
+  losRadius: 5
   losDistance: 8
   losLayerMask:
     serializedVersion: 2
