@@ -2,14 +2,13 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 
-public class Villager : MonoBehaviour, IInteractable, IDamageable
+public class Villager : MonoBehaviour, IDamageable
 {
     // Variables
-    [SerializeField] private string message = "Empty Message";
     [SerializeField] private float health = 100.0f;
     
     // Functions
-    public void Interact()
+    public void PrintMessage(string message)
     {
         Debug.Log(message);
     }
