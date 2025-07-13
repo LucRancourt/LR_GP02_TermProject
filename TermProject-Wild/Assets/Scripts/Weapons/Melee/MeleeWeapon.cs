@@ -23,7 +23,7 @@ public class MeleeWeapon : Weapon
             if (target.TryGetComponent(out IDamageable damageable))
             {
                 Knockback(target.gameObject);
-                damageable.TakeDamage(meleeConfig.damage);
+                damageable.TakeDamage(meleeConfig.damage, gameObject);
             }
 
             Debug.Log(target.name);

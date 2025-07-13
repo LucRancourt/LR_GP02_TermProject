@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(InputController))]
@@ -10,8 +11,10 @@ using UnityEngine;
 [RequireComponent(typeof(HotbarInventory))]
 
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
+    [SerializeField] private InputActionAsset playerInputAction;
+
     // Animator
     private Animator _animator;
     private AnimatorStateInfo _previousAnimState;
@@ -54,14 +57,25 @@ public class PlayerController : MonoBehaviour
         // Parameters
 
     private readonly int _hashIsGrounded = Animator.StringToHash("IsGrounded");
+
     private readonly int _hashForwardVelocity = Animator.StringToHash("ForwardVelocity");
     private readonly int _hashIsMovingForward = Animator.StringToHash("IsMovingForward");
     private readonly int _hashVerticalVelocity = Animator.StringToHash("VerticalVelocity");
-    private readonly int _hashRandomIdle = Animator.StringToHash("RandomIdle");
+
     private readonly int _hashInputDetected = Animator.StringToHash("InputDetected");
-    private readonly int _hashMeleeAttack = Animator.StringToHash("MeleeAttack");
+
+    private readonly int _hashRandomIdle = Animator.StringToHash("RandomIdle");
     private readonly int _hashTimeToIdle = Animator.StringToHash("TimeToIdle");
-    private readonly int m_hashStateTime = Animator.StringToHash("StateTime");
+    private readonly int _hashStateTime = Animator.StringToHash("StateTime");
+
+    private readonly int _hashHurtDirectionX = Animator.StringToHash("HurtDirectionX");
+    private readonly int _hashHurtDirectionZ = Animator.StringToHash("HurtDirectionZ");
+
+    // Triggers
+    private readonly int _hashMeleeAttack = Animator.StringToHash("MeleeAttack");
+    private readonly int _hashHurt = Animator.StringToHash("Hurt");
+    private readonly int _hashDead = Animator.StringToHash("Dead");
+    private readonly int _hashRespawn = Animator.StringToHash("Respawn");
 
     #endregion
 
@@ -86,7 +100,16 @@ public class PlayerController : MonoBehaviour
     private bool _canBlink = true;
     private WaitForSeconds _blinkTimer;
     #endregion
-    
+
+    #region Health
+    private Vector3 _respawnLocation;
+
+    [SerializeField] private float respawnDelay = 5.0f;
+
+    [SerializeField] private float maxHealth = 100.0f;
+    private float _currentHealth;
+    #endregion
+
     //private bool _isSliding;
 
     //private bool _isCrouching;
@@ -104,6 +127,8 @@ public class PlayerController : MonoBehaviour
     private bool _inputIsAttacking;
     private bool _inputIsJumping;
     private bool _inputIsLooking;
+    private bool _isHurt;
+    private bool _isRespawning;
     //private bool _inputIsMoving;
     [SerializeField] private float inputTimeActiveFloat = 0.5f;
     private WaitForSeconds _inputTimeActiveSeconds;
@@ -147,6 +172,9 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        _respawnLocation = transform.position;
+        Respawn();
     }
 
     #region InputController Enable/Disable
@@ -346,6 +374,14 @@ public class PlayerController : MonoBehaviour
 
             case 2:
                 _inputIsLooking = value;
+                break;
+
+            case 3:
+                _isHurt = value;
+                break;
+
+            case 4:
+                _isRespawning = value;
                 break;
         }
     }
@@ -575,6 +611,7 @@ public class PlayerController : MonoBehaviour
 
 
 
+
     private void AttemptInteract()
     {
         Vector3 origin = transform.position;
@@ -621,7 +658,7 @@ public class PlayerController : MonoBehaviour
         _animator.SetInteger(_hashRandomIdle, Random.Range(0, 2));
 
 
-        _animator.SetFloat(m_hashStateTime, Mathf.Repeat(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
+        _animator.SetFloat(_hashStateTime, Mathf.Repeat(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
         _animator.ResetTrigger(_hashMeleeAttack);
 
         // Currently this because other weapons are guns and only anim is for punching/swinging
@@ -658,6 +695,47 @@ public class PlayerController : MonoBehaviour
         if (_previousAnimState.fullPathHash != currentAnimStateInfo.fullPathHash)
             _previousAnimState = currentAnimStateInfo;
     }
+
+
+    private void Respawn()
+    {
+        _currentHealth = maxHealth;
+
+        _animator.SetTrigger(_hashRespawn);
+
+        _controller.enabled = false;
+        transform.position = _respawnLocation;
+        _controller.enabled = true;
+
+        playerInputAction.Enable();
+    }
+
+    public void TakeDamage(float damage, GameObject caller)
+    {
+        if (_isHurt || _currentHealth <= 0.0f) return;
+
+        _currentHealth -= damage;
+
+
+        if (_currentHealth <= 0.0f)
+        {
+            playerInputAction.Disable();
+            _animator.SetTrigger(_hashDead);
+            _animator.ResetTrigger(_hashRespawn);
+            Invoke("Respawn", respawnDelay);
+        }
+        else
+        {
+            _animator.SetTrigger(_hashHurt);
+
+            Vector3 hurtDirection = HelpfulFunctions.GetDirection(caller.transform.forward, transform.forward);
+
+            _animator.SetFloat(_hashHurtDirectionX, hurtDirection.x);
+            _animator.SetFloat(_hashHurtDirectionZ, hurtDirection.z);
+
+            StartCoroutine(SetInputVar(InputSwitchValues.Hurt));
+        }
+    }
 }
 
 
@@ -666,5 +744,6 @@ enum InputSwitchValues
 {
     Attack,
     Jump,
-    Look
+    Look,
+    Hurt
 }

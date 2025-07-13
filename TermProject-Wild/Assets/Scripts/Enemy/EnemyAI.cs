@@ -13,9 +13,19 @@ public enum EnemyAIStates
 
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))]
 public class EnemyAI : MonoBehaviour
 {
-    [SerializeField] private EnemyAIStates currentState = EnemyAIStates.Idle;
+    [SerializeField] private EnemyAIStates _currentState = EnemyAIStates.Idle;
+
+    [Header("In Range")]
+    [SerializeField] private float inRangeRadius = 2.0f;
+    [SerializeField] private LayerMask inRangeLayerMask;
+
+    [Header("Line of Sight")]
+    [SerializeField] private float losRadius = 2.0f;
+    [SerializeField] private float losDistance = 5.0f;
+    [SerializeField] private LayerMask losLayerMask;
 
     [Header("Idle")] 
     [SerializeField] private float timeToPatrol = 5.0f;
@@ -26,22 +36,25 @@ public class EnemyAI : MonoBehaviour
     private int _currentPatrolPoint = 0;
     [SerializeField] private bool isPatrolRandom = false;
     [SerializeField] private float patrolSpeed = 5.0f;
-    
+
     [Header("Chase")]
-    //[SerializeField] private float chaseDistance = 5f;
     [SerializeField] private float chaseSpeed = 5.0f;
-    
+
     [Header("Attack")]
+    [SerializeField] private float attackDamage = 5.0f;
     [SerializeField] private float attackDistance = 1.0f;
     [SerializeField] private float attackDelay = 0.5f;
+    private bool _hasAttacked = false;
+
+    private bool _playerInRange = false;
 
     private EnemyAIStates _previousState;
     private GameObject _currentTarget;
-    private Vector3 _targetPosition;
+
+    private Animator _animator;
 
     [Header("NavMeshAgent")]
     private NavMeshAgent _navMeshAgent;
-    [SerializeField] private float stoppingDistance = 5.0f;
 
 
 
@@ -49,12 +62,37 @@ public class EnemyAI : MonoBehaviour
     private void Start()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
-        _navMeshAgent.stoppingDistance = stoppingDistance;
+
+        _animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        switch (currentState)
+        // Is Player in range?
+        Collider[] playerHit = Physics.OverlapSphere(transform.position, inRangeRadius, inRangeLayerMask);
+        if (playerHit.Length != 0)
+        {
+            _currentTarget = playerHit[0].gameObject;
+            _playerInRange = true;
+        }
+        else
+            _playerInRange = false;
+
+        // Is Player in view?
+        if (_playerInRange)
+        {
+            if (Physics.SphereCast(transform.position, losRadius, transform.forward, out RaycastHit hitInfo,
+                losDistance, losLayerMask, QueryTriggerInteraction.Ignore))
+                if (hitInfo.transform.gameObject.TryGetComponent(out PlayerController player))
+                    if (player != null)
+                        _currentState = EnemyAIStates.Chase;
+        }
+        else if (_currentState == EnemyAIStates.Chase || _currentState == EnemyAIStates.Attack)
+            _currentState = EnemyAIStates.Idle;
+
+
+
+        switch (_currentState)
         {
             case EnemyAIStates.Idle:
                 IdleBehaviour();
@@ -74,10 +112,14 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, inRangeRadius);
+        Gizmos.DrawWireSphere(transform.position + transform.forward * losDistance, losRadius);
+    }
+
     private void IdleBehaviour()
     {
-        Debug.Log("IdleBehaviour");
-        
         // Rigidbody? or some custom like CharacterController?
         
         
@@ -96,22 +138,22 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(timeToPatrol);
 
         timerToPatrolStarted = false;
-        currentState = EnemyAIStates.Patrol;
+        _currentState = EnemyAIStates.Patrol;
     }
 
     private void PatrolBehaviour()
     {
-        Debug.Log("PatrolBehaviour");
-
-        if ((Mathf.Approximately(transform.position.x, patrolPoints[_currentPatrolPoint].position.x)) && 
-                Mathf.Approximately(transform.position.z, patrolPoints[_currentPatrolPoint].position.z))
+        if ((HelpfulFunctions.Approximately(transform.position, patrolPoints[_currentPatrolPoint].position, true)))
         {
             NewPatrolPointTarget();
-            
-            currentState = EnemyAIStates.Idle;
+
+            _currentState = EnemyAIStates.Idle;
         }
         else
-            transform.position = HelpfulFunctions.MoveToWithoutVertical(transform.position, patrolPoints[_currentPatrolPoint].position, patrolSpeed);
+        {
+            transform.LookAt(HelpfulFunctions.MoveToWithoutVertical(transform.position, patrolPoints[_currentPatrolPoint].position, patrolSpeed));
+            _navMeshAgent.SetDestination(patrolPoints[_currentPatrolPoint].position);
+        }
     }
 
     private void NewPatrolPointTarget()
@@ -133,8 +175,6 @@ public class EnemyAI : MonoBehaviour
 
     private void ChaseBehaviour()
     {
-        Debug.Log("Chase");
-
         RotateTowardsTarget();
 
 
@@ -145,16 +185,24 @@ public class EnemyAI : MonoBehaviour
 
         if (currentDistance <= attackDistance)
         {
-            currentState = EnemyAIStates.Attack;
+            _currentState = EnemyAIStates.Attack;
         }
     }
 
     private void AttackBehaviour()
     {
-        Debug.Log("Attack");
+        if (_hasAttacked) return;
+
+        _navMeshAgent.SetDestination(transform.position);
+
+        _hasAttacked = true;
 
         RotateTowardsTarget();
 
+        _currentTarget.TryGetComponent(out IDamageable damageable);
+
+        if (damageable != null)
+            damageable.TakeDamage(attackDamage, gameObject);
 
         StartCoroutine(AttackDelay());
     }
@@ -163,35 +211,13 @@ public class EnemyAI : MonoBehaviour
     {
         yield return new WaitForSeconds(attackDelay);
 
-        currentState = EnemyAIStates.Chase;
+        _currentState = EnemyAIStates.Chase;
+        _hasAttacked = false;
     }
 
     private void RotateTowardsTarget()
     {
         if (_currentTarget)
             transform.LookAt(_currentTarget.transform);
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            StopAllCoroutines();
-            
-            _currentTarget = other.gameObject;
-            currentState = EnemyAIStates.Chase;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            StopAllCoroutines();
-            
-            _currentTarget = null;
-            currentState = EnemyAIStates.Idle;
-        }
     }
 }

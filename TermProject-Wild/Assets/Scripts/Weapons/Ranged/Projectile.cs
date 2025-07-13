@@ -73,7 +73,7 @@ public class Projectile : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out IDamageable damageable))
         {
-            damageable.TakeDamage(_damage);
+            damageable.TakeDamage(_damage, gameObject);
             gameObject.SetActive(false);
         }
     }

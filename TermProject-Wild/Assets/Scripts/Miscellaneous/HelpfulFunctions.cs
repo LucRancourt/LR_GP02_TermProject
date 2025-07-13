@@ -14,6 +14,9 @@ public static class HelpfulFunctions
     }
 
 
+
+
+
         // Ints
     public static int Clamp(int valueToClamp, int min, int max)
     {
@@ -54,6 +57,82 @@ public static class HelpfulFunctions
 
 
 
+    public static int Abs(int a)
+    {
+        return a > 0 ? a : -a;
+    }
+
+    public static float Abs(float a)
+    {
+        return a > 0.0f ? a : -a;
+    }
+
+
+    public static int Min(int a, int b)
+    {
+        return a < b ? a : b;
+    }
+
+    public static float Min(float a, float b)
+    {
+        return a < b ? a : b;
+    }
+
+    public static int Max(int a, int b)
+    {
+        return a > b ? a : b;
+    }
+
+    public static float Max(float a, float b)
+    {
+        return a > b ? a : b;
+    }
+
+
+
+
+    public static bool Approximately(float a, float b)
+    {
+        return Abs(b - a) < Max(1E-06f * Max(Abs(a), Abs(b)), Mathf.Epsilon * 8f);
+    }
+
+    public static bool Approximately(Vector2 a, Vector2 b)
+    {
+        if (a.x >= b.x - Mathf.Epsilon && a.x <= b.x + Mathf.Epsilon)
+            if (a.y >= b.y - Mathf.Epsilon && a.y <= b.y + Mathf.Epsilon)
+                return true;
+
+        return false;
+    }
+
+    public static bool Approximately(Vector3 a, Vector3 b, bool ignoreY = false)
+    {
+
+        if (Abs(b.x - a.x) < Max(1E-06f * Max(Abs(a.x), Abs(b.x)), Mathf.Epsilon * 8f))
+        {
+            Debug.Log("X");
+            if ((Abs(b.y - a.y) < Max(1E-06f * Max(Abs(a.y), Abs(b.y)), Mathf.Epsilon * 8f)) || ignoreY)
+            {
+                Debug.Log(ignoreY);
+                if (Abs(b.z - a.z) < Max(1E-06f * Max(Abs(a.z), Abs(b.z)), Mathf.Epsilon * 8f))
+                {
+                    Debug.Log("Z");
+                    return true;
+                }
+            }
+        }
+
+        /*
+        if (a.x >= b.x - Mathf.Epsilon && a.x <= b.x + Mathf.Epsilon)
+            if ((a.y >= b.y - Mathf.Epsilon && a.y <= b.y + Mathf.Epsilon) || ignoreY)
+                if (a.z >= b.z - Mathf.Epsilon && a.z <= b.z + Mathf.Epsilon)
+                    return true;
+        */
+        return false;
+    }
+
+
+
     public static Vector3 MoveToWithoutVertical(Vector3 position, Vector3 target, float speed)
     {
         float currentHeight = position.y;
@@ -69,8 +148,6 @@ public static class HelpfulFunctions
 
     public static int RandomOne()
     {
-        int value = Random.Range(0, 2) * 2 - 1;
-        Debug.Log(value);
-        return value;
+        return Random.Range(0, 2) * 2 - 1;
     }
 }

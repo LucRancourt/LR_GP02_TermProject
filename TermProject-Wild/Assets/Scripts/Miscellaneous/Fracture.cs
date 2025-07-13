@@ -9,7 +9,7 @@ public class Fracture : MonoBehaviour, IDamageable
 
 
     // Functions
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, GameObject caller)
     {
         GameObject fract = Instantiate(fracturedVersion, transform.position, transform.rotation);
 

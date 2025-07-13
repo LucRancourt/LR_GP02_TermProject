@@ -14,7 +14,7 @@ public class Villager : MonoBehaviour, IInteractable, IDamageable
         Debug.Log(message);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, GameObject caller)
     {
         health -= damage;
 

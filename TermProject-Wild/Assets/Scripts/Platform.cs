@@ -5,7 +5,7 @@ public class Platform : MonoBehaviour
 {
     // Variables
     private Sequence _mySequence;
-    [SerializeField] private float movementAmount = 50.0f;
+    [SerializeField] private Vector3 movementAmount = Vector3.zero;
     [SerializeField] private float movementTime = 5.0f;
     [SerializeField] private float scaleAmount = 3.0f;
     [SerializeField] private float intervalDuration = 3.0f;
@@ -16,27 +16,11 @@ public class Platform : MonoBehaviour
         _mySequence = DOTween.Sequence();
 
 
-        _mySequence.Append(transform.DOMoveX(movementAmount, movementTime));
-        _mySequence.Join(transform.DOScale(scaleAmount, movementTime));
-
+        _mySequence.Append(transform.DOMove(transform.position + movementAmount, movementTime));
         _mySequence.AppendInterval(intervalDuration);
 
 
-        _mySequence.Append(transform.DOMoveZ(movementAmount, movementTime));
-        _mySequence.Join(transform.DOScale(1.0f, movementTime));
-
-        _mySequence.AppendInterval(intervalDuration);
-
-
-        _mySequence.Append(transform.DOMoveX(-movementAmount, movementTime));
-        _mySequence.Join(transform.DOScale(scaleAmount, movementTime));
-
-        _mySequence.AppendInterval(intervalDuration);
-
-
-        _mySequence.Append(transform.DOMoveZ(-movementAmount, movementTime));
-        _mySequence.Join(transform.DOScale(1.0f, movementTime));
-
+        _mySequence.Append(transform.DOMove(transform.position - movementAmount, movementTime));
         _mySequence.AppendInterval(intervalDuration);
 
 
