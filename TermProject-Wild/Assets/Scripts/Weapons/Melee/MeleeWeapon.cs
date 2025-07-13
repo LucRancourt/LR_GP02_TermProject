@@ -26,7 +26,6 @@ public class MeleeWeapon : Weapon
                 damageable.TakeDamage(meleeConfig.damage, gameObject);
             }
 
-            Debug.Log(target.name);
             Debug.DrawRay(transform.position, HelpfulFunctions.GetDirection(target.transform.position, transform.position), Color.blue, 5.0f);
         }
     }

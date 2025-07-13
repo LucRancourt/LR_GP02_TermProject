@@ -2849,6 +2849,7 @@ GameObject:
   - component: {fileID: 1706145726}
   - component: {fileID: 1706145725}
   - component: {fileID: 1706145724}
+  - component: {fileID: 1706145727}
   - component: {fileID: 1706145723}
   m_Layer: 0
   m_Name: AimCam
@@ -2959,6 +2960,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1706145727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706145722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4afa82ae3200b82408d605c3dbdd1e38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damping: 0
 --- !u!95 &1709272528 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 264318499590136020, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
@@ -4177,6 +4191,10 @@ PrefabInstance:
       propertyPath: cmStateCamDriver
       value: 
       objectReference: {fileID: 1163389545}
+    - target: {fileID: 6341465700259199701, guid: a5db7e37ed2315241b66e37b9a10338b, type: 3}
+      propertyPath: interactCheckDistance
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

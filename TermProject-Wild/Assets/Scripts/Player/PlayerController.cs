@@ -1,7 +1,6 @@
 using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(InputController))]
@@ -615,7 +614,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         Vector3 origin = transform.position;
         origin.y += GetComponent<CharacterController>().height * 0.65f;
         
-        if (Physics.SphereCast(origin, interactCheckRadius, transform.forward, out RaycastHit hitInfo, 
+        if (Physics.SphereCast(origin, interactCheckRadius, mainCamera.transform.forward, out RaycastHit hitInfo, 
                 interactCheckDistance, interactLayer))
         {
             if (hitInfo.collider.TryGetComponent(out IInteractable interactable))
@@ -634,7 +633,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         Gizmos.DrawWireSphere(origin, interactCheckRadius);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(origin + transform.forward * interactCheckDistance, interactCheckRadius);
+        Gizmos.DrawWireSphere(origin + mainCamera.transform.forward * interactCheckDistance, interactCheckRadius);
     }
     
 
