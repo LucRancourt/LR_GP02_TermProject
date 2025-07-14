@@ -36,6 +36,8 @@ public class OnCollisionTrigger : Trigger
 
     private void OnTriggerStay(Collider other)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (!_canTriggerAgain) return;
 
         StartCoroutine(OnStayEffect());
@@ -48,6 +50,7 @@ public class OnCollisionTrigger : Trigger
         yield return new WaitForSeconds(onStayInterval);
 
         OnStay.Invoke();
+
         _canTriggerAgain = true;
     }
 

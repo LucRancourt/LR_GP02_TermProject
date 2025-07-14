@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private CinemachineCamera thirdPersonCam;
 
 
+    // UI
+    [Header("UI")]
+    [SerializeField] private InGameMenu _igMenu;
+
     // Weapon
     private Weapon equippedWeapon;
     private HotbarInventory weaponInventory;
@@ -722,6 +726,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Respawn()
     {
         _currentHealth = maxHealth;
+        _igMenu.SetMaxHealth(maxHealth);
+        _igMenu.SetCurrentHealth(_currentHealth);
 
         _animator.SetTrigger(_hashRespawn);
 
@@ -738,6 +744,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (_isHurt || _currentHealth <= 0.0f) return;
 
         _currentHealth -= damage;
+        _igMenu.SetCurrentHealth(_currentHealth);
 
 
         if (_currentHealth <= 0.0f)
@@ -755,6 +762,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (_isHurt || _currentHealth <= 0.0f) return;
 
         _currentHealth -= damage;
+        _igMenu.SetCurrentHealth(_currentHealth);
 
 
         if (_currentHealth <= 0.0f)
