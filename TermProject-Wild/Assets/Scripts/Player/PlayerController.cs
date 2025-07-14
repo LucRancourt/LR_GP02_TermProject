@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     // Variables
     [Header("Variable Values")]
+    private bool _isGrounded;
 
     #region Animator
     [SerializeField] private float maxTimeToIdle = 5.0f;
@@ -388,6 +389,9 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
+                        // Set groundCheckDistance to 0.1 and go on second slope for funny
+        _isGrounded = groundCheck.IsGrounded;
+
         Look();
 
         if (_isBlinking)
@@ -409,8 +413,26 @@ public class PlayerController : MonoBehaviour, IDamageable
         UpdateAnimatorVars();
 
         _moveVelocity = _targetVelocity;
+        //_controller.Move(_moveVelocity * Time.fixedDeltaTime);
+    }
 
-        _controller.Move(_moveVelocity * Time.fixedDeltaTime);
+    // Root Motion
+    private void OnAnimatorMove()
+    {
+        Vector3 rootVelocity;
+
+        if (_isGrounded)
+        {
+            rootVelocity = _animator.deltaPosition;
+            rootVelocity.y = _moveVelocity.y * Time.fixedDeltaTime;
+        }
+        // Otherwise the Jump Anim doesn't give any ForwardVelocity
+        else
+        {
+            rootVelocity = _moveVelocity * Time.fixedDeltaTime * playerControlConfig.airControlFactor;
+        }
+
+        _controller.Move(rootVelocity);
     }
 
     private void Look()
@@ -434,12 +456,14 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void ApplyGravity()
     {
         // Always apply Gravity in case of Jumps/Ramps/Ledges/Falls/Etc
-        if (groundCheck.IsGrounded && _jumpVelocity < 0.0f)
-            _jumpVelocity = playerControlConfig.gravityForce;
+        if (_isGrounded && _jumpVelocity < 0.0f)
+            _jumpVelocity = playerControlConfig.gravityForce * 0.1f;
         else if (_jumpVelocity < 0.0f)
             _jumpVelocity += playerControlConfig.gravityForce * playerControlConfig.gravityMultiplier * Time.fixedDeltaTime;
         else
             _jumpVelocity += playerControlConfig.gravityForce * Time.fixedDeltaTime;
+
+        HelpfulFunctions.ClampRef(ref _jumpVelocity, playerControlConfig.gravityForce, _jumpVelocity);
 
         _targetVelocity.y = _jumpVelocity;
     }
@@ -469,7 +493,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Jump()
     {
-        if (groundCheck.IsGrounded)
+        if (_isGrounded)
         {
             // Cooldown to ensure that you can still Jump when walking down Ramps/after slightly falling off edge (might not always be Grounded)
             _coyoteTime = playerControlConfig.coyoteTime;
@@ -521,7 +545,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         float rate = _moveInput != Vector2.zero ? playerControlConfig.accelerationRate : playerControlConfig.decelerationRate;
 
-        rate = groundCheck.IsGrounded ? rate : rate * playerControlConfig.airControlFactor;
+        rate = _isGrounded ? rate : rate * playerControlConfig.airControlFactor;
 
         // Are we going in the opposite direction?
         if (Vector3.Dot(_moveInput, _previousInput) < 0.0f)
@@ -641,7 +665,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void UpdateAnimatorVars()
     {
-        _animator.SetBool(_hashIsGrounded, groundCheck.IsGrounded);
+        _animator.SetBool(_hashIsGrounded, _isGrounded);
 
 
         float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
