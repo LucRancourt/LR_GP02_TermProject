@@ -564,6 +564,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
 
 
+
     // DESTROY EQUIPPED ITEM METHOD
     /*
     private void EquipWeapon(int weaponIndex)

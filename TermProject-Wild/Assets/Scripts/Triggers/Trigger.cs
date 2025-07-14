@@ -9,6 +9,8 @@ public class Trigger : MonoBehaviour
     protected Collider pCollider;
     private MeshRenderer _meshRenderer;
 
+    [SerializeField] private bool disableMesh = true;
+
     [Tooltip("Value of -1 means an infite amount of times.")]
     [SerializeField] private int timesCanTrigger = 1;
 
@@ -21,7 +23,9 @@ public class Trigger : MonoBehaviour
         pCollider.isTrigger = true;
 
         _meshRenderer = GetComponent<MeshRenderer>();
-        _meshRenderer.enabled = false;
+
+        if (disableMesh)
+            _meshRenderer.enabled = false;
     }
 
     protected bool CanBeTriggered()

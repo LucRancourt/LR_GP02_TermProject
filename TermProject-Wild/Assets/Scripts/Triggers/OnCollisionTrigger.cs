@@ -9,7 +9,7 @@ public class OnCollisionTrigger : Trigger
     // Variables
     [SerializeField] private LayerMask triggerMask;
 
-    [SerializeField] private UnityEvent OnStay;
+    [SerializeField] private UnityEvent OnStay, OnExit;
     [SerializeField] private float onStayInterval = 3.0f;
     private bool _canTriggerAgain = true;
 
@@ -49,5 +49,19 @@ public class OnCollisionTrigger : Trigger
 
         OnStay.Invoke();
         _canTriggerAgain = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        StopAllCoroutines();
+
+        OnExit.Invoke();
+    }
+
+
+    // Option 2 - Probably better option so switch it later
+    protected void Behaviour()
+    {
+        Debug.Log("Ex: do TakeDamage here so it works on Anything that walks into the Trigger vs just the Player");
     }
 }
