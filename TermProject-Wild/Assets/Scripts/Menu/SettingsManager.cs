@@ -51,4 +51,13 @@ public class SettingsManager : MonoBehaviour
         _currentVolume = (int)value;
         volumeText.text = "Volume: " + _currentVolume;
     }
+
+
+
+
+
+    public void StartGame()
+    {
+        LevelManager.Instance.LoadLevel("Sandbox");
+    }
 }

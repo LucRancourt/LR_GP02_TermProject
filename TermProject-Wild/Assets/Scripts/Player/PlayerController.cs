@@ -449,7 +449,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         UpdateAnimatorVars();
 
         _moveVelocity = _targetVelocity;
-        //_controller.Move(_moveVelocity * Time.fixedDeltaTime);
+        //_controller.Move(_moveVelocity * Time.fixedDeltaTime); <- when not using RootMotion
     }
 
     // Root Motion
