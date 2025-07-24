@@ -175,9 +175,41 @@ public class PlayerController : MonoBehaviour, IDamageable
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        _respawnLocation = transform.position;
+
+        GameData gameData = SaveManager.Instance.LoadGame();
+        if (gameData != null)
+        {
+            _respawnLocation = gameData.PlayerPosition;
+            Debug.Log(gameData);
+        }
+        
+        
         Respawn();
     }
+
+
+
+
+
+    private void OnDestroy()
+    {
+        SavePlayerData();
+    }
+
+    private void SavePlayerData()
+    {
+        GameData gameData = new GameData();
+        gameData.PlayerPosition = transform.position;
+        gameData.PlayerScore = new System.Random().Next(0, 100);
+        SaveManager.Instance.SaveGame(gameData);
+    }
+    
+    
+    
+    
+    
+    
+    
 
     #region InputController Enable/Disable
 
@@ -423,6 +455,9 @@ public class PlayerController : MonoBehaviour, IDamageable
     // Root Motion
     private void OnAnimatorMove()
     {
+        if (_isBlinking) return;
+        
+        
         Vector3 rootVelocity;
 
         if (_isGrounded)
@@ -578,8 +613,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         }
 
         destination.y += 0.5f;
+        
+        _controller.enabled = false;
         transform.position = destination;
-
+        _controller.enabled = true;
+        
         StartCoroutine(BlinkCooldown());
     }
 
