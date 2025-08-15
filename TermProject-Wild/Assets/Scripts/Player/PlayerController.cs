@@ -606,7 +606,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Blink()
     {
-        Vector3 destination = transform.position + transform.forward * playerControlConfig.blinkDistance;
+        Vector3 destination = transform.position + (_moveDirection == Vector3.zero ? transform.forward * playerControlConfig.blinkDistance : _moveDirection * playerControlConfig.blinkDistance);
 
         if (Physics.Raycast(transform.position, HelpfulFunctions.GetDirection(destination, transform.position),
                 out RaycastHit hitInfo, playerControlConfig.blinkDistance))
