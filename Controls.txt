@@ -1,0 +1,22 @@
+Mouse to Look 
+
+Left-click with Weapon to Attack
+
+Right-click HOLD for Aim Camera
+
+WASD or Arrow Keys to Move
+
+Spacebar to Jump (Hold for Higher Jump)
+
+Shift to Blink
+
+Q for 1stPerson <-> 3rdPerson Toggle
+
+R for Reload on Ranged Weapons
+
+1 2 3 4 5
+For Weapon Equips (and 5 is Unequip)
+
+E to Interact (can only use it with the Red Capsule, and it only prints a Debug line)
+
+Red Capsule and Monkey can be hit 

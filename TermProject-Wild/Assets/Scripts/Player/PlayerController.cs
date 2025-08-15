@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     #region Blink
     private bool _isBlinking;
+    private bool _isBlinkingForAnimator;
     private bool _canBlink = true;
     private WaitForSeconds _blinkTimer;
     #endregion
@@ -299,6 +300,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         _canBlink = false;
         _isBlinking = true;
+        _isBlinkingForAnimator = true;
         Blink();
     }
 
@@ -730,29 +732,28 @@ public class PlayerController : MonoBehaviour, IDamageable
             _animator.SetTrigger(_hashMeleeAttack);
 
 
-        bool inputDetected = _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero || _isBlinking;
+        bool inputDetected = _inputIsLooking || _inputIsAttacking || _inputIsJumping || _moveInput != Vector2.zero || _isBlinkingForAnimator;
+        _isBlinkingForAnimator = false;
         _animator.SetBool(_hashInputDetected, inputDetected);
 
 
         AnimatorStateInfo currentAnimStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
 
-        if (currentAnimStateInfo.shortNameHash == _hashMovement || currentAnimStateInfo.shortNameHash == _hashMovementBack)
-        {
-            if ((_previousAnimState.shortNameHash != _hashMovement && _previousAnimState.shortNameHash != _hashMovementBack) || inputDetected)
-            {
-                _timeToIdle = maxTimeToIdle;
-                _animator.SetBool(_hashTimeToIdle, false);
-            }
 
-            if (_timeToIdle <= 0.0f)
-            {
-                _animator.SetBool(_hashTimeToIdle, true);
-                _timeToIdle = maxTimeToIdle;
-            }
-            else
-            {
-                _timeToIdle -= Time.deltaTime;
-            }
+        if (inputDetected)
+        {
+            _timeToIdle = maxTimeToIdle;
+            _animator.SetBool(_hashTimeToIdle, false);
+        }
+
+        if (_timeToIdle <= 0.0f)
+        {
+            _animator.SetBool(_hashTimeToIdle, true);
+            _timeToIdle = maxTimeToIdle;
+        }
+        else
+        {
+            _timeToIdle -= Time.deltaTime;
         }
 
 
