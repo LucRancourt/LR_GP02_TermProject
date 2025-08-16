@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private readonly int _hashIsGrounded = Animator.StringToHash("IsGrounded");
 
     private readonly int _hashForwardVelocity = Animator.StringToHash("ForwardVelocity");
-    private readonly int _hashIsMovingForward = Animator.StringToHash("IsMovingForward");
+    private readonly int _hashRightVelocity = Animator.StringToHash("RightVelocity");
     private readonly int _hashVerticalVelocity = Animator.StringToHash("VerticalVelocity");
 
     private readonly int _hashInputDetected = Animator.StringToHash("InputDetected");
@@ -85,6 +85,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Vector2 _lookInput;
     private Vector2 _currentMouseDelta;
     private Vector2 _currentMouseVelocity;
+
     [SerializeField] private Transform lookTarget;
     private float _lookTargetRotX;
     #endregion
@@ -484,14 +485,9 @@ public class PlayerController : MonoBehaviour, IDamageable
             ref _currentMouseVelocity, playerControlConfig.lookSmoothTime);
 
 
-        // Left/Right
-        transform.Rotate(Vector3.up, _currentMouseDelta.x);
-
-
-        // Up/Down
         _lookTargetRotX = HelpfulFunctions.Clamp(_lookTargetRotX - _currentMouseDelta.y, -playerControlConfig.xCameraBounds, playerControlConfig.xCameraBounds);
 
-        lookTarget.localRotation = Quaternion.AngleAxis(_lookTargetRotX, Vector3.right);
+        lookTarget.localRotation = Quaternion.Euler(_lookTargetRotX, lookTarget.localRotation.eulerAngles.y + _currentMouseDelta.x, 0.0f);
     }
 
     private void ApplyGravity()
@@ -511,8 +507,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void Move()
     {
-        _moveDirection = transform.forward * _moveInput.y + transform.right * _moveInput.x;
+        _moveDirection = lookTarget.forward * _moveInput.y + transform.right * _moveInput.x;
         _moveDirection.Normalize();
+
+        if (_moveInput != Vector2.zero)
+        {
+            transform.rotation = Quaternion.Euler(0.0f, lookTarget.localRotation.eulerAngles.y, 0.0f);
+        }
 
         _targetVelocity = _moveDirection * playerControlConfig.targetMoveSpeed;
     }
@@ -675,6 +676,11 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     }
 
+    public void PlayStep()
+    {
+        Debug.Log("Heya");
+    }
+
 
 
 
@@ -713,9 +719,13 @@ public class PlayerController : MonoBehaviour, IDamageable
 
 
         float forwardVelocity = Vector3.Project(_targetVelocity, transform.forward).magnitude;
+        forwardVelocity = Vector3.Dot(_targetVelocity, transform.forward) > 0.0f ? forwardVelocity : -forwardVelocity;
         _animator.SetFloat(_hashForwardVelocity, forwardVelocity);
 
-        _animator.SetBool(_hashIsMovingForward, Vector3.Dot(_targetVelocity, transform.forward) > 0.0f);
+        float rightVelocity = Vector3.Project(_targetVelocity, transform.right).magnitude;
+        rightVelocity = Vector3.Dot(_targetVelocity, transform.right) > 0.0f ? rightVelocity : -rightVelocity;
+        _animator.SetFloat(_hashRightVelocity, rightVelocity);
+
 
 
         _animator.SetFloat(_hashVerticalVelocity, _controller.velocity.y);
