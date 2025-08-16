@@ -13,8 +13,8 @@ public class LevelManager : Singleton<LevelManager>
     public void LoadLevel(string levelName)
     {
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-        
-        SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
+
+        LoadingScreen.Instance.LoadLevel(levelName);
     }
 
     private void SetActiveScene(Scene scene, LoadSceneMode mode)

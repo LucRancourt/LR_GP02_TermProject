@@ -67,6 +67,14 @@ public static class HelpfulFunctions
         return a > 0.0f ? a : -a;
     }
 
+    public static Vector3 Abs(Vector3 a)
+    {
+        a.x = Abs(a.x);
+        a.y = Abs(a.y);
+        a.z = Abs(a.z);
+
+        return a;
+    }
 
 
     public static int Min(int a, int b)

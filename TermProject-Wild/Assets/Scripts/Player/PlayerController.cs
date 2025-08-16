@@ -182,7 +182,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (gameData != null)
         {
             _respawnLocation = gameData.PlayerPosition;
-            Debug.Log(gameData);
         }
         
         
