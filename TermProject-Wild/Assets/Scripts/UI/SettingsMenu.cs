@@ -2,11 +2,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsManager : Singleton<SettingsManager>
+public class SettingsMenu : Singleton<SettingsMenu>
 {
     // Variables
     private const string MusicVolumeKey = "MusicVolume";
     private const string SFXVolumeKey = "SFXVolume";
+
+    [Header("ClickSFX")]
+    [SerializeField] private AudioClip clickSFX;
 
     [Header("Settings UI")]
     [SerializeField] private GameObject settingsMenu;
@@ -30,7 +33,8 @@ public class SettingsManager : Singleton<SettingsManager>
     {
         closeSettingsMenu.onClick.AddListener(CloseMenu);
         closeSettingsMenu.onClick.AddListener(SaveSettings);
-        
+        closeSettingsMenu.onClick.AddListener(PlayClickSFX);
+
         musicVolumeSlider.onValueChanged.AddListener(UpdateMusicVolume);
         sfxVolumeSlider.onValueChanged.AddListener(UpdateSFXVolume);
             
@@ -87,4 +91,10 @@ public class SettingsManager : Singleton<SettingsManager>
         //AudioManager.Instance.SetSFXVolume(_currentSFXVolume);
     }
     #endregion
+
+
+    private void PlayClickSFX()
+    {
+        AudioManager.Instance.PlaySoundEffect(clickSFX);
+    }
 }

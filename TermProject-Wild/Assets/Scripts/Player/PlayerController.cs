@@ -402,8 +402,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void HandlePauseGameInput()
     {
-        SwitchCursorMode();
-        GameManager.Instance.PauseGame();
+        PauseMenu.Instance.PauseGame(this);
     }
 
 

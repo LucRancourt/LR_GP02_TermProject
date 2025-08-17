@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Audio;
 
 public class AudioManager : Singleton<AudioManager>
 {
+    [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private AudioClip musicClip;
     private AudioSource _musicSource;
 

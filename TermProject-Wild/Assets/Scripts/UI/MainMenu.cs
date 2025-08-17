@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : Singleton<MainMenu>
+public class MainMenu : MonoBehaviour
 {
     // Variables
     [Header("ClickSFX")]
@@ -14,13 +14,18 @@ public class MainMenu : Singleton<MainMenu>
 
 
     // Functions
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         playButton.onClick.AddListener(StartGame);
         settingsButton.onClick.AddListener(OpenSettings);
         quitButton.onClick.AddListener(QuitGame);
+
+        playButton.onClick.AddListener(PlayClickSFX);
+        settingsButton.onClick.AddListener(PlayClickSFX);
+        quitButton.onClick.AddListener(PlayClickSFX);
     }
 
 
@@ -31,7 +36,7 @@ public class MainMenu : Singleton<MainMenu>
 
     private void OpenSettings()
     {
-        SettingsManager.Instance.OpenMenu();
+        SettingsMenu.Instance.OpenMenu();
     }
 
     private void QuitGame()

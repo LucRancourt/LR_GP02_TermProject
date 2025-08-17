@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
     public void PauseGame()
     {
         Time.timeScale = 0.0f;
-        SettingsManager.Instance.OpenMenu();
+        SettingsMenu.Instance.OpenMenu();
     }
 
     public void UnPauseGame()
