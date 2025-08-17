@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class InGameMenu : Menu
+public class InGameMenu : Singleton<InGameMenu>
 {
     // Variables
     [Header("General UI")]

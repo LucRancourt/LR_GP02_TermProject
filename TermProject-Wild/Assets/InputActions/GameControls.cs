@@ -73,15 +73,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""JumpCancel"",
-                    ""type"": ""Button"",
-                    ""id"": ""6095a8fb-71e0-494b-8499-dfac6762dc13"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Fire"",
                     ""type"": ""Button"",
                     ""id"": ""362b7126-9fc0-4f6f-96b2-39a1400e57d7"",
@@ -130,6 +121,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""SwitchPOV"",
                     ""type"": ""Button"",
                     ""id"": ""e2855a9c-f96a-450e-b418-655674b398ef"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""67980ab7-325d-47dd-9ec1-9715803973ca"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -315,28 +315,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""8cd1d335-248d-4b7d-87c2-5d2c4128a9dc"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": ""Invert"",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""JumpCancel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9e7e0767-f3d1-4e47-948f-c6999ccca404"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": ""Invert"",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""JumpCancel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""157a811e-b8f3-4106-bb27-c08225d81516"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -510,6 +488,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""SwitchPOV"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6e2b0136-ed73-41f2-b782-5d1c018bd57a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -562,13 +551,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Player_Blink = m_Player.FindAction("Blink", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-        m_Player_JumpCancel = m_Player.FindAction("JumpCancel", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_EquipItem = m_Player.FindAction("EquipItem", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_SwitchPOV = m_Player.FindAction("SwitchPOV", throwIfNotFound: true);
+        m_Player_PauseGame = m_Player.FindAction("PauseGame", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -640,13 +629,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Blink;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Jump;
-    private readonly InputAction m_Player_JumpCancel;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Aim;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_EquipItem;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_SwitchPOV;
+    private readonly InputAction m_Player_PauseGame;
     public struct PlayerActions
     {
         private @GameControls m_Wrapper;
@@ -656,13 +645,13 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Blink => m_Wrapper.m_Player_Blink;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
-        public InputAction @JumpCancel => m_Wrapper.m_Player_JumpCancel;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Aim => m_Wrapper.m_Player_Aim;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @EquipItem => m_Wrapper.m_Player_EquipItem;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @SwitchPOV => m_Wrapper.m_Player_SwitchPOV;
+        public InputAction @PauseGame => m_Wrapper.m_Player_PauseGame;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -687,9 +676,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @JumpCancel.started += instance.OnJumpCancel;
-            @JumpCancel.performed += instance.OnJumpCancel;
-            @JumpCancel.canceled += instance.OnJumpCancel;
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
@@ -708,6 +694,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @SwitchPOV.started += instance.OnSwitchPOV;
             @SwitchPOV.performed += instance.OnSwitchPOV;
             @SwitchPOV.canceled += instance.OnSwitchPOV;
+            @PauseGame.started += instance.OnPauseGame;
+            @PauseGame.performed += instance.OnPauseGame;
+            @PauseGame.canceled += instance.OnPauseGame;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -727,9 +716,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @JumpCancel.started -= instance.OnJumpCancel;
-            @JumpCancel.performed -= instance.OnJumpCancel;
-            @JumpCancel.canceled -= instance.OnJumpCancel;
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
@@ -748,6 +734,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @SwitchPOV.started -= instance.OnSwitchPOV;
             @SwitchPOV.performed -= instance.OnSwitchPOV;
             @SwitchPOV.canceled -= instance.OnSwitchPOV;
+            @PauseGame.started -= instance.OnPauseGame;
+            @PauseGame.performed -= instance.OnPauseGame;
+            @PauseGame.canceled -= instance.OnPauseGame;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -799,12 +788,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnBlink(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnJumpCancel(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnEquipItem(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnSwitchPOV(InputAction.CallbackContext context);
+        void OnPauseGame(InputAction.CallbackContext context);
     }
 }

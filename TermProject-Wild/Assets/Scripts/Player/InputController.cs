@@ -35,6 +35,8 @@ public class InputController : MonoBehaviour
     public event Action InteractEvent;
 
     public event Action SwitchPOVEvent;
+
+    public event Action PauseGameEvent;
     #endregion
 
 
@@ -74,6 +76,8 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Interact.performed += OnInteractPerformed;
 
         _gameControls.Player.SwitchPOV.performed += OnSwitchPOVPerformed;
+
+        _gameControls.Player.PauseGame.performed += OnPauseGameEventPerformed;
     }
 
     #region Handlers
@@ -156,6 +160,11 @@ public class InputController : MonoBehaviour
     {
         SwitchPOVEvent?.Invoke();
     }
+
+    private void OnPauseGameEventPerformed(InputAction.CallbackContext context)
+    {
+        PauseGameEvent?.Invoke();
+    }
     #endregion
 
     private void OnDisable()
@@ -186,6 +195,8 @@ public class InputController : MonoBehaviour
         _gameControls.Player.Interact.performed -= OnInteractPerformed;
 
         _gameControls.Player.SwitchPOV.performed -= OnSwitchPOVPerformed;
+
+        _gameControls.Player.PauseGame.performed -= OnSwitchPOVPerformed;
 
         _gameControls.Player.Disable();
     }

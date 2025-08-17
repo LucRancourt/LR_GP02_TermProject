@@ -51,15 +51,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "JumpCancel",
-                    "type": "Button",
-                    "id": "6095a8fb-71e0-494b-8499-dfac6762dc13",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Fire",
                     "type": "Button",
                     "id": "362b7126-9fc0-4f6f-96b2-39a1400e57d7",
@@ -108,6 +99,15 @@
                     "name": "SwitchPOV",
                     "type": "Button",
                     "id": "e2855a9c-f96a-450e-b418-655674b398ef",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PauseGame",
+                    "type": "Button",
+                    "id": "67980ab7-325d-47dd-9ec1-9715803973ca",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -293,28 +293,6 @@
                 },
                 {
                     "name": "",
-                    "id": "8cd1d335-248d-4b7d-87c2-5d2c4128a9dc",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "Invert",
-                    "groups": "Keyboard&Mouse",
-                    "action": "JumpCancel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9e7e0767-f3d1-4e47-948f-c6999ccca404",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "Invert",
-                    "groups": ";Gamepad",
-                    "action": "JumpCancel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "157a811e-b8f3-4106-bb27-c08225d81516",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -486,6 +464,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SwitchPOV",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6e2b0136-ed73-41f2-b782-5d1c018bd57a",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "PauseGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

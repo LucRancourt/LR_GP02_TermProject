@@ -1,16 +1,26 @@
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : Singleton<AudioManager>
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    // Variables
+    [SerializeField] private AudioSource _sfxSource;
 
-    // Update is called once per frame
-    void Update()
+
+    // Functions
+    public void PlaySound(SoundEffect sound)
     {
-        
+        _sfxSource.clip = sound.Clip;
+        _sfxSource.volume = sound.Volume;
+        _sfxSource.pitch = sound.Pitch;
+
+        _sfxSource.Play();
     }
+}
+
+
+public class SoundEffect : ScriptableObject
+{
+    [SerializeField] public AudioClip Clip { get; private set; }
+    [SerializeField] public float Volume { get; private set; }
+    [SerializeField] public float Pitch { get; private set; }
 }

@@ -170,6 +170,9 @@ public class PlayerController : MonoBehaviour, IDamageable
         weaponInventory = GetComponent<HotbarInventory>();
 
         _inputTimeActiveSeconds = new WaitForSeconds(inputTimeActiveFloat);
+
+
+        GameManager.Instance.PauseGame();
     }
 
     private void Start()
@@ -187,8 +190,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         
         Respawn();
     }
-
-
 
 
 
@@ -243,6 +244,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             _inputController.InteractEvent += HandleInteractInput;
 
             _inputController.SwitchPOVEvent += HandleSwitchPOVInput;
+
+            _inputController.PauseGameEvent += HandlePauseGameInput;
         }
     }
 
@@ -275,6 +278,8 @@ public class PlayerController : MonoBehaviour, IDamageable
             _inputController.InteractEvent -= HandleInteractInput;
 
             _inputController.SwitchPOVEvent -= HandleSwitchPOVInput;
+
+            _inputController.PauseGameEvent -= HandlePauseGameInput;
         }
     }
 
@@ -386,6 +391,12 @@ public class PlayerController : MonoBehaviour, IDamageable
             mainCamera.cullingMask = allMask;
     }
 
+    private void HandlePauseGameInput()
+    {
+        SwitchCursorMode();
+        GameManager.Instance.PauseGame();
+    }
+
 
     IEnumerator SetInputVar(InputSwitchValues inputToSet)
     {
@@ -423,6 +434,21 @@ public class PlayerController : MonoBehaviour, IDamageable
     }
 
     #endregion
+
+
+    public void SwitchCursorMode()
+    {
+        if (Cursor.visible)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
 
 
     private void FixedUpdate()
