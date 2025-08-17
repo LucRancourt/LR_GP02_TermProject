@@ -194,6 +194,7 @@ public class PlayerController : MonoBehaviour, IDamageable
         if (gameData != null)
         {
             _respawnLocation = gameData.PlayerPosition;
+            GameManager.Instance.SetScore(gameData.PlayerScore);
         }
         
         
@@ -209,6 +210,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void SavePlayerData()
     {
+        
         GameData gameData = new GameData();
         gameData.PlayerPosition = transform.position;
         gameData.PlayerScore = GameManager.Instance.Score;

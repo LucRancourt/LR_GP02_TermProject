@@ -6,12 +6,7 @@ public class GameData
 {
     public string PlayerName;
     public Vector3 PlayerPosition;
-    public float PlayerScore;
-
-    public override string ToString()
-    {
-        return PlayerName + " WOOO " + PlayerScore;
-    }
+    public int PlayerScore;
 }
 
 

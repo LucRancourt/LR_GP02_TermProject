@@ -7,6 +7,12 @@ public class GameManager : Singleton<GameManager>
 
 
     // Functions
+    private void Start()
+    {
+        GameData gameData = SaveManager.Instance.LoadGame();
+        Score = gameData.PlayerScore;
+    }
+
     public void PauseGame()
     {
         Time.timeScale = 0.0f;
@@ -18,8 +24,15 @@ public class GameManager : Singleton<GameManager>
         Time.timeScale = 1.0f;
     }
 
+    public void SetScore(int score)
+    {
+        Score = score;
+        InGameMenu.Instance.SetScore(Score);
+    }
+
     public void AddScore(int amount)
     {
         Score += amount;
+        InGameMenu.Instance.SetScore(Score);
     }
 }
