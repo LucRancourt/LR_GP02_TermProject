@@ -4,20 +4,48 @@ using UnityEngine.Audio;
 
 public class AudioManager : Singleton<AudioManager>
 {
+    // Variables
+    private const string MusicVolumeKey = "MusicVolume";
+    private const string SFXVolumeKey = "SFXVolume";
+
     [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private AudioMixerGroup musicMixer;
+    [SerializeField] private AudioMixerGroup sfxMixer;
+
     [SerializeField] private AudioClip musicClip;
     private AudioSource _musicSource;
 
     private List<AudioSource> _soundEffectSources = new List<AudioSource>();
 
+
+    // Functions
     void Start()
     {
+        LoadVolume();
         InitiateMusic();
     }
+
+    #region Volume
+    private void LoadVolume()
+    {
+        SetMusicVolume(PlayerPrefs.GetInt(MusicVolumeKey));
+        SetMusicVolume(PlayerPrefs.GetInt(SFXVolumeKey));
+    }
+    public void SetMusicVolume(float volume)
+    {
+        audioMixer.SetFloat(MusicVolumeKey, Mathf.Log10(volume) * 20);
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        audioMixer.SetFloat(SFXVolumeKey, Mathf.Log10(volume) * 20);
+    }
+    #endregion
 
     private void InitiateMusic()
     {
         _musicSource = gameObject.AddComponent<AudioSource>();
+        _musicSource.outputAudioMixerGroup = musicMixer;
         _musicSource.clip = musicClip;
         _musicSource.loop = true;
         _musicSource.Play();
@@ -40,6 +68,7 @@ public class AudioManager : Singleton<AudioManager>
         }
 
         AudioSource newAudioSource = gameObject.AddComponent<AudioSource>();
+        newAudioSource.outputAudioMixerGroup = sfxMixer;
         _soundEffectSources.Add(newAudioSource);
         return newAudioSource;
     }

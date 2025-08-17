@@ -600,10 +600,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 742494642}
   m_HandleRect: {fileID: 0}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 100
-  m_WholeNumbers: 1
-  m_Value: 0
+  m_MinValue: 0.0001
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0.0001
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2611,6 +2611,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf68083b1e5ba4146a51d772a89b9899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 7e93840966d26bf4d9dbed0374072449, type: 2}
+  musicMixer: {fileID: -8555758044851204675, guid: 7e93840966d26bf4d9dbed0374072449, type: 2}
+  sfxMixer: {fileID: -1676631809086115864, guid: 7e93840966d26bf4d9dbed0374072449, type: 2}
   musicClip: {fileID: 8300000, guid: 3a0b10bf22a994a5e9b939c974756a24, type: 3}
 --- !u!4 &1804077678
 Transform:
@@ -3354,10 +3357,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1561712751}
   m_HandleRect: {fileID: 0}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 100
-  m_WholeNumbers: 1
-  m_Value: 0
+  m_MinValue: 0.0001
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0.0001
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

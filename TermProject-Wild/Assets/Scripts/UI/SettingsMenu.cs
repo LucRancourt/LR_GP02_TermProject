@@ -23,8 +23,8 @@ public class SettingsMenu : Singleton<SettingsMenu>
     [SerializeField] private TextMeshProUGUI sfxVolumeText;
     [SerializeField] private Slider sfxVolumeSlider;
     
-    private int _currentMusicVolume = 0;
-    private int _currentSFXVolume = 0;
+    private float _currentMusicVolume = 0.0f;
+    private float _currentSFXVolume = 0.0f;
     #endregion
 
 
@@ -44,8 +44,8 @@ public class SettingsMenu : Singleton<SettingsMenu>
     #region Save/Load
     public void SaveSettings()
     {
-        PlayerPrefs.SetInt(MusicVolumeKey, _currentMusicVolume);
-        PlayerPrefs.SetInt(SFXVolumeKey, _currentSFXVolume);
+        PlayerPrefs.SetFloat(MusicVolumeKey, _currentMusicVolume);
+        PlayerPrefs.SetFloat(SFXVolumeKey, _currentSFXVolume);
         PlayerPrefs.Save();
 
         UpdateMusicVolume(_currentMusicVolume);
@@ -53,8 +53,8 @@ public class SettingsMenu : Singleton<SettingsMenu>
 
     private void LoadSettings()
     {
-        _currentMusicVolume = PlayerPrefs.GetInt(MusicVolumeKey);
-        _currentSFXVolume = PlayerPrefs.GetInt(SFXVolumeKey);
+        _currentMusicVolume = PlayerPrefs.GetFloat(MusicVolumeKey);
+        _currentSFXVolume = PlayerPrefs.GetFloat(SFXVolumeKey);
 
         musicVolumeSlider.value = _currentMusicVolume;
         sfxVolumeSlider.value = _currentSFXVolume;
@@ -77,18 +77,18 @@ public class SettingsMenu : Singleton<SettingsMenu>
     #region Volume Funcs
     private void UpdateMusicVolume(float value)
     {
-        _currentMusicVolume = (int)value;
-        musicVolumeText.text = "Music Volume: " + _currentMusicVolume;
+        _currentMusicVolume = value;
+        musicVolumeText.text = "Music Volume: " + (int)(_currentMusicVolume * 100.0f);
 
-        //AudioManager.Instance.SetMusicVolume(_currentMusicVolume);
+        AudioManager.Instance.SetMusicVolume(_currentMusicVolume);
     }
 
     private void UpdateSFXVolume(float value)
     {
-        _currentSFXVolume = (int)value;
-        sfxVolumeText.text = "SFX Volume: " + _currentSFXVolume;
+        _currentSFXVolume = value;
+        sfxVolumeText.text = "SFX Volume: " + (int)(_currentSFXVolume * 100.0f);
 
-        //AudioManager.Instance.SetSFXVolume(_currentSFXVolume);
+        AudioManager.Instance.SetSFXVolume(_currentSFXVolume);
     }
     #endregion
 
