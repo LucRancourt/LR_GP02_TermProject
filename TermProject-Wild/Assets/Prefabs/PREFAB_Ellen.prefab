@@ -922,8 +922,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c215ca7516f4458429e2fc035bf1771d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transformTarget: {fileID: 4959264117297412095}
-  includeRotation: 0
+  targetTransform: {fileID: 1747247642800202004}
+  includePosX: 1
+  includePosY: 1
+  includePosZ: 1
+  includeRotX: 1
+  includeRotY: 1
+  includeRotZ: 1
 --- !u!1 &1991194146700369347
 GameObject:
   m_ObjectHideFlags: 0
@@ -1235,7 +1240,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2402987063544904321}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.2574449, z: -0, w: -0.966293}
+  m_LocalRotation: {x: -0, y: -0.25744462, z: 0, w: -0.96629304}
   m_LocalPosition: {x: -0.01958302, y: 0, z: 0.013480474}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1306,6 +1311,10 @@ MonoBehaviour:
   interactLayer:
     serializedVersion: 2
     m_Bits: 256
+  hurtSFX: []
+  attackSFX: []
+  jumpSFX: []
+  runSFX: []
   playerControlConfig: {fileID: 11400000, guid: eace809e8a1b8fa41a2265db07185c2d, type: 2}
   groundCheck: {fileID: 9069198884255239738}
 --- !u!114 &3916741255713231448
@@ -2704,6 +2713,7 @@ GameObject:
   - component: {fileID: 5017818852815748337}
   - component: {fileID: 5829839269917295275}
   - component: {fileID: 5658730277576627361}
+  - component: {fileID: 8677327418413082218}
   m_Layer: 7
   m_Name: Pistol
   m_TagString: Untagged
@@ -2796,6 +2806,25 @@ MonoBehaviour:
   weaponCooldown: 0.1
   rangedWeaponConfig: {fileID: 11400000, guid: 80903628990685943bde391eafde1b12, type: 2}
   projectile: {fileID: -4025229681738729325, guid: 13479f484a0d9d749b4606999b0b3aee, type: 3}
+--- !u!114 &8677327418413082218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731698736577193498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c215ca7516f4458429e2fc035bf1771d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 1747247642800202004}
+  includePosX: 1
+  includePosY: 1
+  includePosZ: 1
+  includeRotX: 1
+  includeRotY: 1
+  includeRotZ: 1
 --- !u!1 &5734721874869022593
 GameObject:
   m_ObjectHideFlags: 0
@@ -2903,6 +2932,7 @@ GameObject:
   - component: {fileID: 9096031790743455445}
   - component: {fileID: 5876893784062992230}
   - component: {fileID: 5735954516900895030}
+  - component: {fileID: 5944603378705079951}
   m_Layer: 7
   m_Name: Hitscan
   m_TagString: Untagged
@@ -2998,6 +3028,25 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &5944603378705079951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5883552247893581978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c215ca7516f4458429e2fc035bf1771d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 1747247642800202004}
+  includePosX: 1
+  includePosY: 1
+  includePosZ: 1
+  includeRotX: 1
+  includeRotY: 1
+  includeRotZ: 1
 --- !u!1 &5904721465406554728
 GameObject:
   m_ObjectHideFlags: 0
@@ -3136,6 +3185,7 @@ GameObject:
   - component: {fileID: 7852481221575041883}
   - component: {fileID: 5127504093151279729}
   - component: {fileID: 8650762198908860163}
+  - component: {fileID: 8557712962835830173}
   m_Layer: 7
   m_Name: Grenade
   m_TagString: Untagged
@@ -3228,6 +3278,25 @@ MonoBehaviour:
   weaponCooldown: 0.2
   rangedWeaponConfig: {fileID: 11400000, guid: 79d3cb3657774c34f993334c74546d85, type: 2}
   projectile: {fileID: 6275468593269010972, guid: 04d5d215c4e60fe44b1f2f2a7293f711, type: 3}
+--- !u!114 &8557712962835830173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161165920718941006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c215ca7516f4458429e2fc035bf1771d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 1747247642800202004}
+  includePosX: 1
+  includePosY: 1
+  includePosZ: 1
+  includeRotX: 1
+  includeRotY: 1
+  includeRotZ: 1
 --- !u!1 &6264993059544421181
 GameObject:
   m_ObjectHideFlags: 0

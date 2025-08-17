@@ -3,7 +3,7 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     // Variables
-
+    public int Score { get; private set; }
 
 
     // Functions
@@ -16,5 +16,10 @@ public class GameManager : Singleton<GameManager>
     public void UnPauseGame()
     {
         Time.timeScale = 1.0f;
+    }
+
+    public void AddScore(int amount)
+    {
+        Score += amount;
     }
 }

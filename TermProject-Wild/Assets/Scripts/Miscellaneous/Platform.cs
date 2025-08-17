@@ -7,7 +7,7 @@ public class Platform : MonoBehaviour
     private Sequence _mySequence;
     [SerializeField] private Vector3 movementAmount = Vector3.zero;
     [SerializeField] private float movementTime = 5.0f;
-    [SerializeField] private float scaleAmount = 3.0f;
+    //[SerializeField] private float scaleAmount = 3.0f;
     [SerializeField] private float intervalDuration = 3.0f;
 
     // Functions

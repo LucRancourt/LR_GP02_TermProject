@@ -5,29 +5,34 @@ using UnityEngine.UI;
 public class SettingsManager : Singleton<SettingsManager>
 {
     // Variables
-    private const string VolumeKey = "Volume";
+    private const string MusicVolumeKey = "MusicVolume";
+    private const string SFXVolumeKey = "SFXVolume";
 
     [Header("Settings UI")]
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private Button closeSettingsMenu;
-    
+
+    #region Volume Vars
     [Header("Volume")]
-    [SerializeField] private TextMeshProUGUI volumeText;
-    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private TextMeshProUGUI musicVolumeText;
+    [SerializeField] private Slider musicVolumeSlider;
+
+    [SerializeField] private TextMeshProUGUI sfxVolumeText;
+    [SerializeField] private Slider sfxVolumeSlider;
     
+    private int _currentMusicVolume = 0;
+    private int _currentSFXVolume = 0;
+    #endregion
 
-    private int _currentVolume = 0;
 
-
-
-    
     // Functions
     private void Start()
     {
         closeSettingsMenu.onClick.AddListener(CloseMenu);
         closeSettingsMenu.onClick.AddListener(SaveSettings);
         
-        volumeSlider.onValueChanged.AddListener(UpdateVolume);
+        musicVolumeSlider.onValueChanged.AddListener(UpdateMusicVolume);
+        sfxVolumeSlider.onValueChanged.AddListener(UpdateSFXVolume);
             
         LoadSettings();
     }
@@ -35,18 +40,23 @@ public class SettingsManager : Singleton<SettingsManager>
     #region Save/Load
     public void SaveSettings()
     {
-        PlayerPrefs.SetInt(VolumeKey, _currentVolume);
+        PlayerPrefs.SetInt(MusicVolumeKey, _currentMusicVolume);
+        PlayerPrefs.SetInt(SFXVolumeKey, _currentSFXVolume);
         PlayerPrefs.Save();
-        
-        UpdateVolume(_currentVolume);
+
+        UpdateMusicVolume(_currentMusicVolume);
     }
 
     private void LoadSettings()
     {
-        _currentVolume = PlayerPrefs.GetInt(VolumeKey);
-        volumeSlider.value = _currentVolume;
+        _currentMusicVolume = PlayerPrefs.GetInt(MusicVolumeKey);
+        _currentSFXVolume = PlayerPrefs.GetInt(SFXVolumeKey);
 
-        UpdateVolume(_currentVolume);
+        musicVolumeSlider.value = _currentMusicVolume;
+        sfxVolumeSlider.value = _currentSFXVolume;
+
+        UpdateMusicVolume(_currentMusicVolume);
+        UpdateSFXVolume(_currentSFXVolume);
     }
     #endregion
 
@@ -60,10 +70,21 @@ public class SettingsManager : Singleton<SettingsManager>
         settingsMenu.SetActive(false);
     }
 
-
-    private void UpdateVolume(float value)
+    #region Volume Funcs
+    private void UpdateMusicVolume(float value)
     {
-        _currentVolume = (int)value;
-        volumeText.text = "Volume: " + _currentVolume;
+        _currentMusicVolume = (int)value;
+        musicVolumeText.text = "Music Volume: " + _currentMusicVolume;
+
+        //AudioManager.Instance.SetMusicVolume(_currentMusicVolume);
     }
+
+    private void UpdateSFXVolume(float value)
+    {
+        _currentSFXVolume = (int)value;
+        sfxVolumeText.text = "SFX Volume: " + _currentSFXVolume;
+
+        //AudioManager.Instance.SetSFXVolume(_currentSFXVolume);
+    }
+    #endregion
 }

@@ -3057,7 +3057,6 @@ MonoBehaviour:
   - {fileID: 2115670119}
   isPatrolRandom: 1
   patrolSpeed: 8
-  chaseSpeed: 5
   attackDamage: 5
   attackDistance: 1.6
   attackDelay: 1
@@ -6831,6 +6830,58 @@ PrefabInstance:
       propertyPath: cmStateCamDriver
       value: 
       objectReference: {fileID: 1163389545}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: stepSFX.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: attackSFX.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'stepSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c443a4e57cfdeee45b22395a230a10bc, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'stepSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ed3854407abad5e48983bb9740442cf3, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'stepSFX.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: eae37be7867a9d44db000b0103244b5e, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'stepSFX.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7309fd88de24a3644807830e878d250f, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'attackSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ba2c6a3364fe55747ac1caf67fb992eb, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'attackSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: d03eda93158d93f449a30c65a83dda7c, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'attackSFX.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 0994e9dae749f8f48b1bbae44576b223, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'attackSFX.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 0994e9dae749f8f48b1bbae44576b223, type: 2}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: playerSFX.m_Keys.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: playerSFX.m_Values.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6158593827715547646, guid: 4cb89eb235ae67a44a4d158bf8baf0bb, type: 3}
+      propertyPath: 'playerSFX.m_Keys.Array.data[0]'
+      value: dd
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

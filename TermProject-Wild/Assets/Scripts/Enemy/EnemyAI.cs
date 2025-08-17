@@ -38,7 +38,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float patrolSpeed = 5.0f;
 
     [Header("Chase")]
-    [SerializeField] private float chaseSpeed = 5.0f;
+    //[SerializeField] private float chaseSpeed = 5.0f;
 
     [Header("Attack")]
     [SerializeField] private float attackDamage = 5.0f;

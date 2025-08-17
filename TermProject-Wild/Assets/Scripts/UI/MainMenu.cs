@@ -4,6 +4,9 @@ using UnityEngine.UI;
 public class MainMenu : Singleton<MainMenu>
 {
     // Variables
+    [Header("ClickSFX")]
+    [SerializeField] private AudioClip clickSFX;
+
     [Header("Buttons")]
     [SerializeField] private Button playButton;
     [SerializeField] private Button settingsButton;
@@ -23,7 +26,7 @@ public class MainMenu : Singleton<MainMenu>
 
     private void StartGame()
     {
-        LevelManager.Instance.LoadLevel("Sandbox");
+        LevelManager.Instance.LoadLevel("GameScene");
     }
 
     private void OpenSettings()
@@ -34,5 +37,10 @@ public class MainMenu : Singleton<MainMenu>
     private void QuitGame()
     {
         Application.Quit();
+    }
+
+    private void PlayClickSFX()
+    {
+        AudioManager.Instance.PlaySoundEffect(clickSFX);
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     // Variables
     [Header("Variable Values")]
     private bool _isGrounded;
+
 
     #region Animator
     [SerializeField] private float maxTimeToIdle = 5.0f;
@@ -146,12 +148,22 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] public float interactCheckRadius = 0.2f;
     [SerializeField] public LayerMask interactLayer;
     #endregion
-   
+
+
+    // SFX
+    [Header("SFX")]
+    [SerializeField] private List<AudioClip> hurtSFX;
+    [SerializeField] private List<AudioClip> attackSFX;
+    [SerializeField] private List<AudioClip> jumpSFX;
+    [SerializeField] private List<AudioClip> runSFX;
+
 
     // Configs
     [Header("Configs")]
     [SerializeField] private PlayerControllerConfig playerControlConfig;
     [SerializeField] private GroundCheck groundCheck;
+
+
 
 
 
@@ -170,9 +182,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         weaponInventory = GetComponent<HotbarInventory>();
 
         _inputTimeActiveSeconds = new WaitForSeconds(inputTimeActiveFloat);
-
-
-        GameManager.Instance.PauseGame();
     }
 
     private void Start()
@@ -202,7 +211,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         GameData gameData = new GameData();
         gameData.PlayerPosition = transform.position;
-        gameData.PlayerScore = new System.Random().Next(0, 100);
+        gameData.PlayerScore = GameManager.Instance.Score;
         SaveManager.Instance.SaveGame(gameData);
     }
     
@@ -694,6 +703,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     public void MeleeAttackStart()  // Frame the Attack should Start
     {
         equippedWeapon.Use();
+
+        AudioManager.Instance.PlaySoundEffect(attackSFX[Random.Range(0, attackSFX.Count - 1)]);
     }
 
     public void MeleeAttackEnd()    // Frame the Attack should End
@@ -703,7 +714,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void PlayStep()
     {
-        Debug.Log("Heya");
+        AudioManager.Instance.PlaySoundEffect(runSFX[Random.Range(0, runSFX.Count - 1)]);
     }
 
 
