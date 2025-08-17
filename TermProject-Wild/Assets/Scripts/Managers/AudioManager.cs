@@ -57,6 +57,13 @@ public class AudioManager : Singleton<AudioManager>
         soundSource.PlayOneShot(clipToPlay);
     }
 
+    public void PlayRandomSoundEffect(List<AudioClip> listOfSounds)
+    {
+        PlaySoundEffect(listOfSounds[Random.Range(0, listOfSounds.Count - 1)]);
+    }
+
+
+
     private AudioSource GetAvailableSoundEffectSource()
     {
         foreach (AudioSource soundEffectSource in _soundEffectSources)

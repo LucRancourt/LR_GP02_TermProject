@@ -501,7 +501,7 @@ Transform:
   m_GameObject: {fileID: 227476373}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.94, y: 3.74, z: 11.55}
+  m_LocalPosition: {x: -8.94, y: 4.08, z: 47.15}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -938,6 +938,114 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -11.79, y: 0, z: 0}
+--- !u!1 &327017866
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 327017870}
+  - component: {fileID: 327017869}
+  - component: {fileID: 327017868}
+  - component: {fileID: 327017867}
+  m_Layer: 0
+  m_Name: Cube (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &327017867
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327017866}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &327017868
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327017866}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &327017869
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327017866}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &327017870
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327017866}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.27, y: 1.73, z: 52.23}
+  m_LocalScale: {x: 19.739, y: 1, z: 16.442}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -2427,6 +2535,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentState: 0
+  hurtSFX:
+  - {fileID: 8300000, guid: 4a528072e8ad445f28ddd34c84ecd462, type: 3}
+  - {fileID: 8300000, guid: a33f1c181edb64a36a17f71ec8c8db58, type: 3}
+  - {fileID: 8300000, guid: b1a927b83b4394e17b6b0e380ca35d34, type: 3}
+  attackSFX:
+  - {fileID: 8300000, guid: b55626a1eb2774761adab017aeb7d3c1, type: 3}
+  - {fileID: 8300000, guid: 7d0afb4083ad64053bdeb009ee5f557f, type: 3}
+  gruntSFX:
+  - {fileID: 8300000, guid: d662be556027845fc93707790a3e966c, type: 3}
+  - {fileID: 8300000, guid: f6146219f3e9b4d1485f4e513a4a5036, type: 3}
+  - {fileID: 8300000, guid: 85df966dffd37450988e3f4ddadce8c2, type: 3}
+  runSFX:
+  - {fileID: 8300000, guid: 59df86c60b9ce42b09550d4675ffd485, type: 3}
+  - {fileID: 8300000, guid: 1457448d5c37f4e24ae836e5fa686605, type: 3}
+  - {fileID: 8300000, guid: a3b1d99cd9db94bc3b7df72ef0596e4f, type: 3}
   inRangeRadius: 10
   inRangeLayerMask:
     serializedVersion: 2
@@ -2787,6 +2910,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 2732fe64dd2799f439fb845921df626b, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 03ef0d6df37751e428757c65cc12c562, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2856,6 +2983,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: collectionSFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a954f34c9cc9848ae957e7c7a312a400, type: 3}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 7b62104c9efb241939f08e2d8bd01c1c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4427,6 +4566,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: collectionSFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a954f34c9cc9848ae957e7c7a312a400, type: 3}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 7b62104c9efb241939f08e2d8bd01c1c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4489,6 +4640,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: collectionSFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a954f34c9cc9848ae957e7c7a312a400, type: 3}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 7b62104c9efb241939f08e2d8bd01c1c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5263,6 +5426,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: collectionSFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a954f34c9cc9848ae957e7c7a312a400, type: 3}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 7b62104c9efb241939f08e2d8bd01c1c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5731,6 +5906,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin
       objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: collectionSFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a954f34c9cc9848ae957e7c7a312a400, type: 3}
+    - target: {fileID: 4466346917765260543, guid: 99c64de7e25416344b38b287d664f14e, type: 3}
+      propertyPath: 'collectionSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 7b62104c9efb241939f08e2d8bd01c1c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5907,3 +6094,4 @@ SceneRoots:
   - {fileID: 1616615179}
   - {fileID: 1152114858}
   - {fileID: 296428801}
+  - {fileID: 327017870}

@@ -703,7 +703,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         equippedWeapon.Use();
 
-        AudioManager.Instance.PlaySoundEffect(attackSFX[Random.Range(0, attackSFX.Count - 1)]);
+        AudioManager.Instance.PlayRandomSoundEffect(attackSFX);
     }
 
     public void MeleeAttackEnd()    // Frame the Attack should End
@@ -713,7 +713,7 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public void PlayStep()
     {
-        AudioManager.Instance.PlaySoundEffect(runSFX[Random.Range(0, runSFX.Count - 1)]);
+        AudioManager.Instance.PlayRandomSoundEffect(runSFX);
     }
 
 

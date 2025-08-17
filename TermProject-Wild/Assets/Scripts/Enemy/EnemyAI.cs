@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,10 +14,18 @@ public enum EnemyAIStates
 
 
 [RequireComponent(typeof(NavMeshAgent))]
+
+// Using the unitypack's animator
 [RequireComponent(typeof(Animator))]
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private EnemyAIStates _currentState = EnemyAIStates.Idle;
+
+    [Header("SFX")]
+    [SerializeField] private List<AudioClip> hurtSFX;
+    [SerializeField] private List<AudioClip> attackSFX;
+    [SerializeField] private List<AudioClip> gruntSFX;
+    [SerializeField] private List<AudioClip> runSFX;
 
     [Header("In Range")]
     [SerializeField] private float inRangeRadius = 2.0f;
@@ -220,4 +229,16 @@ public class EnemyAI : MonoBehaviour
         if (_currentTarget)
             transform.LookAt(_currentTarget.transform);
     }
+
+    #region Animator
+    public void PlayStep()
+    {
+        AudioManager.Instance.PlayRandomSoundEffect(runSFX);
+    }
+
+    public void Grunt()
+    {
+        AudioManager.Instance.PlayRandomSoundEffect(gruntSFX);
+    }
+    #endregion
 }
